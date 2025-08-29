@@ -45,15 +45,16 @@
       display: inline-block;
   }
 
-  /* Completed state */
-  li.completed .todo-label {
-      color: #66d9ef; /* DONE */
+
+  li.completed > .todo-label {
+      color: #66d9ef; /* DONE label color */
   }
 
-  li.completed .todo-text {
+  li.completed > .todo-text {
+      color: #888; /* DONE text color */
       text-decoration: line-through;
-      color: #888;
   }
+
 
   /* Focus highlight for keyboard navigation */
   li:focus {
@@ -70,8 +71,6 @@
       outline: none; /* remove the dotted outline */
   }
 
-
-
   /* Optional: parent with children indicator */
   li.has-children::before {
       content: "▸"; /* triangle symbol for collapsed */
@@ -85,6 +84,15 @@
   li.collapsed::before {
       content: "▾"; /* triangle symbol for expanded */
   }
+
+  .child-count {
+      font-size: 0.85em;
+      color: #888;
+      margin-left: 0.5em;
+      user-select: none;
+  }
+
+
 
 </style>
 </head>

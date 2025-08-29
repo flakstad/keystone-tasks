@@ -40,8 +40,54 @@ class TodoList {
       }
 
       // Navigate
-      if(e.key==="ArrowDown" && idx<siblings.length-1) siblings[idx+1].focus();
-      if(e.key==="ArrowUp" && idx>0) siblings[idx-1].focus();
+      if(e.key==="ArrowDown") {
+        e.preventDefault();
+        if(idx < siblings.length - 1) {
+          siblings[idx+1].focus();
+        } else {
+          // last child, move to next of parent if exists
+          const parentLi = li.parentNode.closest("li");
+          if(parentLi) {
+            const parentSiblings = Array.from(parentLi.parentNode.children).filter(c=>c.tagName==="LI");
+            const parentIdx = parentSiblings.indexOf(parentLi);
+            if(parentIdx < parentSiblings.length - 1) parentSiblings[parentIdx+1].focus();
+          }
+        }
+      }
+
+      if(e.key==="ArrowUp") {
+        e.preventDefault();
+        if(idx > 0) {
+          siblings[idx-1].focus();
+        } else {
+          // first child, move focus to parent li if exists
+          const parentLi = li.parentNode.closest("li");
+          if(parentLi) parentLi.focus();
+        }
+      }
+
+      // Navigate into first child with right arrow (if no Alt)
+      if (!e.altKey && e.key === "ArrowRight") {
+        const sublist = li.querySelector("ul");
+        if (sublist && sublist.children.length > 0) {
+          const firstChild = sublist.querySelector("li");
+          if (firstChild) {
+            e.preventDefault();
+            firstChild.focus();
+          }
+        }
+      }
+
+      // Navigate back to parent with left arrow (if no Alt)
+      if (!e.altKey && e.key === "ArrowLeft") {
+        const parentLi = li.parentNode.closest("li");
+        if (parentLi) {
+          e.preventDefault();
+          parentLi.focus();
+        }
+      }
+
+
 
       // Alt keys
       if(e.altKey){
@@ -89,6 +135,12 @@ class TodoList {
       id: li.dataset.id,
       completed: li.classList.contains("completed")
     });
+
+    let parentLi = li.parentNode.closest("li");
+    while(parentLi) {
+      this.updateChildCount(parentLi);
+      parentLi = parentLi.parentNode.closest("li");
+    }
   }
 
 
@@ -124,6 +176,8 @@ class TodoList {
 
     li.focus();
     this.emit("todo:add", { text, id: li.dataset.id });
+
+    if (parentLi) this.updateChildCount(parentLi);
   }
 
 
@@ -135,6 +189,10 @@ class TodoList {
     if(!sublist){ sublist=document.createElement("ul"); prev.appendChild(sublist); }
     sublist.appendChild(li); li.focus();
     this.emit("todo:indent",{id:li.dataset.id,parent:prev.dataset.id});
+
+    this.updateChildCount(prev);
+    const newParentLi = li.parentNode.closest("li");
+    if (newParentLi) this.updateChildCount(newParentLi);
   }
 
   outdentItem(li){
@@ -143,6 +201,10 @@ class TodoList {
     const parentLi=parentUl.closest("li"); const grandUl=parentLi.parentNode;
     grandUl.insertBefore(li,parentLi.nextSibling); li.focus();
     this.emit("todo:outdent",{id:li.dataset.id,newParent:grandUl.id||null});
+
+    this.updateChildCount(parentLi);
+    const newParentLi = li.parentNode.closest("li");
+    if (newParentLi) this.updateChildCount(newParentLi);
   }
 
   collapseItem(li){
@@ -161,7 +223,35 @@ class TodoList {
         li.classList.remove("collapsed");
     }
     this.emit("todo:expand",{id:li.dataset.id});
-}
+  }
+
+  updateChildCount(li) {
+    const sublist = li.querySelector("ul");
+    let countSpan = li.querySelector(".child-count");
+
+    if (!sublist || sublist.children.length === 0) {
+        // Remove count if no children
+        if (countSpan) countSpan.remove();
+        return;
+    }
+
+    // Count direct children
+    const children = Array.from(sublist.children).filter(c => c.tagName === "LI");
+    const doneCount = children.filter(c => c.classList.contains("completed")).length;
+
+    if (!countSpan) {
+        countSpan = document.createElement("span");
+        countSpan.className = "child-count";
+        // Append **after the text span**
+        const textSpan = li.querySelector(".todo-text");
+        if (textSpan) textSpan.after(countSpan);
+        else li.appendChild(countSpan);
+    }
+
+    countSpan.textContent = `[${doneCount}/${children.length}]`;
+  }
+
+
 
   emit(name,detail){ this.el.dispatchEvent(new CustomEvent(name,{detail})); }
 }
