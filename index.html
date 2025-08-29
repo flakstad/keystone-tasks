@@ -11,6 +11,23 @@
   ul ul { margin-left: 1.5rem; padding-left: 0.5rem; border-left: 1px dotted #ccc; }
   #new-todo { padding: 0.5rem; width: 200px; margin-bottom: 1rem; display:block; }
   #key-bindings { margin-top: 1rem; font-size: 0.9rem; color: #eee; }
+  li.has-children {
+      position: relative;
+      padding-left: 1.2em;
+  }
+
+  li.has-children::before {
+      content: "▼"; /* expanded by default */
+      position: absolute;
+      left: 0;
+      top: 0.1em;
+      cursor: pointer;
+  }
+
+  li.collapsed::before {
+      content: "▶"; /* collapsed */
+  }
+
 </style>
 </head>
 <body>
@@ -20,6 +37,9 @@
 <ul id="todo-list">
   <li data-id="1" tabindex="0">Buy milk</li>
   <li data-id="2" tabindex="0">Read book</li>
+  <li data-id="3" tabindex="0">Make food</li>
+  <li data-id="4" tabindex="0">Tidy living room</li>
+  <li data-id="5" tabindex="0">Run around</li>
 </ul>
 
 <div id="key-bindings">

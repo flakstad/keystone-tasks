@@ -37,11 +37,13 @@ class TodoList {
         if(e.key==="ArrowUp" && idx>0){
           e.preventDefault();
           li.parentNode.insertBefore(li, siblings[idx-1]);
+          li.focus();
           this.emit("todo:move",{id:li.dataset.id,from:idx,to:idx-1});
         }
         if(e.key==="ArrowDown" && idx<siblings.length-1){
           e.preventDefault();
           li.parentNode.insertBefore(siblings[idx+1], li);
+          li.focus();
           this.emit("todo:move",{id:li.dataset.id,from:idx,to:idx+1});
         }
         // Hierarchy
@@ -50,6 +52,15 @@ class TodoList {
         // Collapse / Expand
         if(e.key.toUpperCase()==="H"){ e.preventDefault(); this.collapseItem(li); }
         if(e.key.toUpperCase()==="L"){ e.preventDefault(); this.expandItem(li); }
+      }
+    });
+
+    this.el.addEventListener("click", e=>{
+      const li=e.target.closest("li.has-children");
+      if(li && e.target === li.querySelector("::before")){ // pseudo-element won't trigger directly
+        const sublist=li.querySelector("ul");
+        if(sublist.style.display==="none") this.expandItem(li);
+        else this.collapseItem(li);
       }
     });
   }
@@ -62,12 +73,25 @@ class TodoList {
     this.emit("todo:toggle",{id:li.dataset.id,completed:li.classList.contains("completed")});
   }
 
-  addItem(text){
+  addItem(text, parentLi){
     const li=document.createElement("li");
     li.textContent=text; li.tabIndex=0; li.dataset.id=crypto.randomUUID();
-    this.el.appendChild(li); li.focus();
+
+    if(parentLi){
+        let sublist=parentLi.querySelector("ul");
+        if(!sublist){
+            sublist=document.createElement("ul");
+            parentLi.appendChild(sublist);
+            parentLi.classList.add("has-children");
+        }
+        sublist.appendChild(li);
+    } else {
+        this.el.appendChild(li);
+    }
+    li.focus();
     this.emit("todo:add",{text,id:li.dataset.id});
-  }
+}
+
 
   indentItem(li){
     const siblings=this.getSiblings(li); const idx=siblings.indexOf(li);
@@ -89,15 +113,21 @@ class TodoList {
 
   collapseItem(li){
     const sublist=li.querySelector("ul");
-    if(sublist) sublist.style.display="none";
+    if(sublist){
+        sublist.style.display="none";
+        li.classList.add("collapsed");
+    }
     this.emit("todo:collapse",{id:li.dataset.id});
   }
 
   expandItem(li){
     const sublist=li.querySelector("ul");
-    if(sublist) sublist.style.display="block";
+    if(sublist){
+        sublist.style.display="block";
+        li.classList.remove("collapsed");
+    }
     this.emit("todo:expand",{id:li.dataset.id});
-  }
+}
 
   emit(name,detail){ this.el.dispatchEvent(new CustomEvent(name,{detail})); }
 }
