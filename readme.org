@@ -1,7 +1,9 @@
 * Tasks
-** TODO styling like org mode, text, with TODO/DONE label, and strikethrough
+** DONE styling like org mode, text, with TODO/DONE label, and strikethrough
+CLOSED: [2025-08-29 fr. 22:58]
+** DONE showing brackets and count of children finished
+CLOSED: [2025-08-29 fr. 23:05]
 ** TODO enter or click on todo navigates to the todo
-** TODO showing brackets and count of children finished
 ** TODO allow renaming inline
 ** TODO create new input at the bottom, behind subtle link button
 ** TODO alt enter to add new todo

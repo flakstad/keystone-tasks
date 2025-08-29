@@ -67,16 +67,22 @@ class TodoList {
       }
 
       // Navigate into first child with right arrow (if no Alt)
+      // Navigate into first child with right arrow (if no Alt)
       if (!e.altKey && e.key === "ArrowRight") {
         const sublist = li.querySelector("ul");
         if (sublist && sublist.children.length > 0) {
-          const firstChild = sublist.querySelector("li");
-          if (firstChild) {
-            e.preventDefault();
-            firstChild.focus();
+          e.preventDefault();
+
+          // If collapsed, expand first-level children only
+          if (li.classList.contains("collapsed")) {
+            this.expandItem(li); // only expands direct children
           }
+
+          const firstChild = sublist.querySelector("li");
+          if (firstChild) firstChild.focus();
         }
       }
+
 
       // Navigate back to parent with left arrow (if no Alt)
       if (!e.altKey && e.key === "ArrowLeft") {
