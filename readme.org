@@ -5,6 +5,8 @@ CLOSED: [2025-08-29 fr. 22:58]
 CLOSED: [2025-08-29 fr. 23:05]
 ** TODO redo keyboard shortcuts to use single letter: t, a, s, ..
 https://chatgpt.com/c/68b204d9-610c-8332-86c8-1617eb94f38f
+** TODO allow having no TODO label, just use as grouping header
+Would still have a perma
 ** TODO default expand/collapse is Enter for details/summary
 ** TODO enter or click on todo navigates to the todo
 ** TODO allow renaming inline
