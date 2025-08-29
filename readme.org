@@ -1,8 +1,15 @@
 * Tasks
-** TODO styling like org mode, text, with TODO/DONE label, and strikethrough animation
+** TODO styling like org mode, text, with TODO/DONE label, and strikethrough
 ** TODO enter or click on todo navigates to the todo
+** TODO showing brackets and count of children finished
+** TODO allow renaming inline
+** TODO create new input at the bottom, behind subtle link button
+** TODO alt enter to add new todo
+** TODO allow entries without TODO
 ** TODO shift+arrow left/right cycles todo state, or click on label
 ** TODO shift+arrow up/down cycles priority - do I want this?
 ** TODO tags?
 ** TODO when use with datastar, handle new html reinit todolist script
 ** TODO when use with datastar, comm with server listening for events
+** TODO awesome strikethrough animation, a joy to complete tasks
+** TODO introduce sortablejs as well, so you can use mouse to reorder

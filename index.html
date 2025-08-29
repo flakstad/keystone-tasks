@@ -4,42 +4,117 @@
 <meta charset="UTF-8">
 <title>Todo List Demo</title>
 <style>
-  body { font-family: sans-serif; margin: 2rem; background: #333; color: #eee; }
-  ul { list-style: none; padding: 0; }
-  li { padding: 0.5rem; border: 1px solid #ccc; margin-bottom: 0.25rem; cursor: pointer; }
-  li.completed { text-decoration: line-through; color: #888; }
-  ul ul { margin-left: 1.5rem; padding-left: 0.5rem; border-left: 1px dotted #ccc; }
-  #new-todo { padding: 0.5rem; width: 200px; margin-bottom: 1rem; display:block; }
-  #key-bindings { margin-top: 1rem; font-size: 0.9rem; color: #eee; }
-  li.has-children {
-      position: relative;
-      padding-left: 1.2em;
+  body {
+      font-family: monospace;
+      margin: 2rem;
+      background: #1e1e1e;
+      color: #ddd;
   }
 
+  h1 {
+      color: #f8f8f2;
+  }
+
+  ul {
+      list-style: none;
+      padding-left: 0; /* top-level ul */
+  }
+
+  ul ul {
+      margin: 0;         /* remove extra margin */
+      padding-left: 1.5rem; /* indent nested todos */
+      border-left: 1px dotted #555;
+  }
+
+  li {
+      cursor: pointer;
+      line-height: 1.5;
+      padding: 0.3rem 0.5rem;
+      position: relative;
+  }
+
+  /* Label and text inline */
+  .todo-label {
+      font-weight: bold;
+      color: #f92672; /* TODO */
+      user-select: none;
+      margin-right: 0.5rem;
+  }
+
+  .todo-text {
+      display: inline-block;
+  }
+
+  /* Completed state */
+  li.completed .todo-label {
+      color: #66d9ef; /* DONE */
+  }
+
+  li.completed .todo-text {
+      text-decoration: line-through;
+      color: #888;
+  }
+
+  /* Focus highlight for keyboard navigation */
+  li:focus {
+      outline: 1px dotted #f8f8f2;
+  }
+  /* Focus highlight for keyboard navigation */
+  li:focus {
+      outline: 1px dotted #f8f8f2;
+      outline-offset: 0.2em; /* gives a little space outside the text */
+  }
+  /* Focus highlight for keyboard navigation (solid background) */
+  li:focus {
+      background: rgba(255, 255, 255, 0.1); /* subtle highlight behind text */
+      outline: none; /* remove the dotted outline */
+  }
+
+
+
+  /* Optional: parent with children indicator */
   li.has-children::before {
-      content: "▼"; /* expanded by default */
+      content: "▸"; /* triangle symbol for collapsed */
       position: absolute;
       left: 0;
-      top: 0.1em;
+      top: 0.15em;
+      font-size: 0.8em;
       cursor: pointer;
   }
 
   li.collapsed::before {
-      content: "▶"; /* collapsed */
+      content: "▾"; /* triangle symbol for expanded */
   }
 
 </style>
 </head>
 <body>
+
 <h1>Todo List</h1>
+
 <input id="new-todo" type="text" placeholder="Add a todo and press Enter">
 
 <ul id="todo-list">
-  <li data-id="1" tabindex="0">Buy milk</li>
-  <li data-id="2" tabindex="0">Read book</li>
-  <li data-id="3" tabindex="0">Make food</li>
-  <li data-id="4" tabindex="0">Tidy living room</li>
-  <li data-id="5" tabindex="0">Run around</li>
+  <li data-id="1" tabindex="0">
+    <span class="todo-label">TODO</span>
+    <span class="todo-text">Buy milk</span>
+  </li>
+  <li data-id="2" tabindex="0">
+    <span class="todo-label">TODO</span>
+    <span class="todo-text">Read book</span>
+  </li>
+  <li data-id="2" tabindex="0">
+    <span class="todo-label">TODO</span>
+    <span class="todo-text">Make food</span>
+  </li>
+  <li data-id="2" tabindex="0">
+    <span class="todo-label">TODO</span>
+    <span class="todo-text">Tidy living room</span>
+  </li>
+  <li data-id="2" tabindex="0">
+    <span class="todo-label">TODO</span>
+    <span class="todo-text">Run around</span>
+  </li>
 </ul>
 
 <div id="key-bindings">

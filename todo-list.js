@@ -10,8 +10,20 @@ class TodoList {
   }
 
   bindEvents() {
+
+
     this.el.addEventListener("click", e => {
-      if(e.target.tagName==="LI") this.toggleItem(e.target);
+      const li = e.target.closest("li");
+      if (!li) return;
+
+      if (e.target.classList.contains("todo-label")) {
+        console.log("Label clicked", li.dataset.id);
+        this.toggleItem(li);  // or custom behavior for label click
+      } else if (e.target.classList.contains("todo-text")) {
+        console.log("Text clicked", li.dataset.id);
+        // Maybe edit text, or toggle as well
+        this.toggleItem(li);
+      }
     });
 
     this.el.addEventListener("keydown", e => {
@@ -68,29 +80,51 @@ class TodoList {
   getItems() { return Array.from(this.el.querySelectorAll("li")); }
   getSiblings(li){ return Array.from(li.parentNode.children).filter(c=>c.tagName==="LI"); }
 
-  toggleItem(li){
-    li.classList.toggle("completed");
-    this.emit("todo:toggle",{id:li.dataset.id,completed:li.classList.contains("completed")});
+  toggleItem(li) {
+    const completed = li.classList.toggle("completed");
+    const label = li.querySelector(".todo-label");
+    if (label) label.textContent = completed ? "DONE" : "TODO";
+
+    this.emit("todo:toggle", {
+      id: li.dataset.id,
+      completed: li.classList.contains("completed")
+    });
   }
 
-  addItem(text, parentLi){
-    const li=document.createElement("li");
-    li.textContent=text; li.tabIndex=0; li.dataset.id=crypto.randomUUID();
 
-    if(parentLi){
-        let sublist=parentLi.querySelector("ul");
-        if(!sublist){
-            sublist=document.createElement("ul");
-            parentLi.appendChild(sublist);
-            parentLi.classList.add("has-children");
-        }
-        sublist.appendChild(li);
+  addItem(text, parentLi) {
+    const li = document.createElement("li");
+    li.tabIndex = 0;
+    li.dataset.id = crypto.randomUUID();
+
+    // Create label span
+    const label = document.createElement("span");
+    label.className = "todo-label";
+    label.textContent = "TODO";
+
+    // Create text span
+    const spanText = document.createElement("span");
+    spanText.className = "todo-text";
+    spanText.textContent = text;
+
+    li.appendChild(label);
+    li.appendChild(spanText);
+
+    if (parentLi) {
+      let sublist = parentLi.querySelector("ul");
+      if (!sublist) {
+        sublist = document.createElement("ul");
+        parentLi.appendChild(sublist);
+        parentLi.classList.add("has-children");
+      }
+      sublist.appendChild(li);
     } else {
-        this.el.appendChild(li);
+      this.el.appendChild(li);
     }
+
     li.focus();
-    this.emit("todo:add",{text,id:li.dataset.id});
-}
+    this.emit("todo:add", { text, id: li.dataset.id });
+  }
 
 
   indentItem(li){
