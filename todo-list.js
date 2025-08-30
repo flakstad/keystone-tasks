@@ -73,8 +73,15 @@ class TodoList {
         return;
       }
 
-      // Set schedule with 's' key
-      if(e.key==="s" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+      // Toggle on hold with 'h' key
+      if(e.key==="h" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.toggleOnHold(li);
+        return;
+      }
+
+      // Set due date with 'd' key
+      if(e.key==="d" && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
         const scheduleBtn = li.querySelector(".schedule-button");
         if (scheduleBtn) {
@@ -719,6 +726,16 @@ class TodoList {
       this.togglePriority(li);
     });
 
+    // On hold button
+    const onHoldBtn = document.createElement("button");
+    onHoldBtn.className = "hover-button onhold-button";
+    onHoldBtn.setAttribute("data-type", "onhold");
+    onHoldBtn.tabIndex = -1; // Remove from tab navigation
+    onHoldBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.toggleOnHold(li);
+    });
+
     // Schedule button
     const scheduleBtn = document.createElement("button");
     scheduleBtn.className = "hover-button schedule-button";
@@ -771,6 +788,7 @@ class TodoList {
     });
 
     buttonsContainer.appendChild(priorityBtn);
+    buttonsContainer.appendChild(onHoldBtn);
     buttonsContainer.appendChild(scheduleBtn);
     buttonsContainer.appendChild(assignBtn);
     buttonsContainer.appendChild(tagsBtn);
@@ -791,13 +809,14 @@ class TodoList {
 
   updateHoverButtons(li) {
     const priorityBtn = li.querySelector(".priority-button");
+    const onHoldBtn = li.querySelector(".onhold-button");
     const scheduleBtn = li.querySelector(".schedule-button");
     const assignBtn = li.querySelector(".assign-button");
     const tagsBtn = li.querySelector(".tags-button");
     const stateBtn = li.querySelector(".state-button");
     const editBtn = li.querySelector(".edit-button");
     
-    if (!priorityBtn || !scheduleBtn || !assignBtn || !tagsBtn || !stateBtn || !editBtn) return;
+    if (!priorityBtn || !onHoldBtn || !scheduleBtn || !assignBtn || !tagsBtn || !stateBtn || !editBtn) return;
     
     let hasAnyData = false;
     
@@ -812,6 +831,17 @@ class TodoList {
       priorityBtn.classList.remove("has-data");
     }
     
+    // Update on hold button
+    const isOnHold = li.classList.contains("on-hold");
+    if (isOnHold) {
+      onHoldBtn.textContent = "on hold";
+      onHoldBtn.classList.add("has-data");
+      hasAnyData = true;
+    } else {
+      onHoldBtn.textContent = "on hold";
+      onHoldBtn.classList.remove("has-data");
+    }
+    
     // Update schedule button
     const scheduleSpan = li.querySelector(".todo-schedule");
     if (scheduleSpan && scheduleSpan.textContent.trim()) {
@@ -819,7 +849,7 @@ class TodoList {
       scheduleBtn.classList.add("has-data");
       hasAnyData = true;
     } else {
-      scheduleBtn.textContent = "schedule";
+      scheduleBtn.textContent = "due on";
       scheduleBtn.classList.remove("has-data");
     }
     
@@ -985,7 +1015,7 @@ class TodoList {
     // Restore focus to the todo item
     li.focus();
 
-    this.emit("todo:schedule", {
+    this.emit("todo:due", {
       id: li.dataset.id,
       text: textSpan.textContent,
       timestamp: date.toISOString()
@@ -1219,6 +1249,54 @@ class TodoList {
       id: li.dataset.id,
       text: textSpan.textContent,
       priority: !isPriority
+    });
+  }
+
+  toggleOnHold(li) {
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+
+    // Check if already on hold
+    const isOnHold = li.classList.contains("on-hold");
+    
+    if (isOnHold) {
+      // Remove on hold
+      li.classList.remove("on-hold");
+      const onHoldSpan = li.querySelector(".todo-onhold");
+      if (onHoldSpan) {
+        onHoldSpan.remove();
+      }
+    } else {
+      // Add on hold
+      li.classList.add("on-hold");
+      
+      // Create hidden on hold span (like other metadata)
+      let onHoldSpan = li.querySelector(".todo-onhold");
+      if (!onHoldSpan) {
+        onHoldSpan = document.createElement("span");
+        onHoldSpan.className = "todo-onhold";
+        onHoldSpan.style.display = "none"; // Hide the span, show in button
+        // Insert after buttons container if it exists, otherwise after text
+        const buttonsContainer = li.querySelector(".todo-hover-buttons");
+        if (buttonsContainer) {
+          buttonsContainer.after(onHoldSpan);
+        } else {
+          textSpan.after(onHoldSpan);
+        }
+      }
+      onHoldSpan.textContent = " on hold";
+    }
+
+    // Update the hover button to show the data
+    this.updateHoverButtons(li);
+
+    // Restore focus to the todo item
+    li.focus();
+
+    this.emit("todo:onhold", {
+      id: li.dataset.id,
+      text: textSpan.textContent,
+      onHold: !isOnHold
     });
   }
 

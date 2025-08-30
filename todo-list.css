@@ -117,6 +117,8 @@ body {
 
 
 
+
+
   .child-count {
     font-size: 0.85em;
     color: #888;
@@ -230,6 +232,16 @@ body {
 
     &.priority-button.has-data:hover {
       color: #ff8555; /* Lighter on hover */
+    }
+
+    /* On hold button special styling when active */
+    &.onhold-button.has-data {
+      color: #f39c12; /* Orange color for on hold */
+      font-weight: bold;
+    }
+
+    &.onhold-button.has-data:hover {
+      color: #f4a942; /* Lighter orange on hover */
     }
   }
 

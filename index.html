@@ -50,10 +50,11 @@
       </li>
     </ul>
   </li>
-  <li data-id="8" tabindex="0" class="priority">
+  <li data-id="8" tabindex="0" class="priority on-hold">
     <span class="todo-label">TODO</span>
     <span class="todo-text">Fix critical bug</span>
     <span class="todo-priority" style="display: none;"> priority</span>
+    <span class="todo-onhold" style="display: none;"> on hold</span>
     <span class="todo-tags" style="display: none;"> urgent bug</span>
   </li>
 </ul>
@@ -104,7 +105,7 @@
   });
 
   // Example: log events
-  ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand","todo:edit:start","todo:edit:save","todo:edit:cancel","todo:schedule","todo:assign","todo:tags","todo:priority","todo:navigate"]
+  ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand","todo:edit:start","todo:edit:save","todo:edit:cancel","todo:due","todo:assign","todo:tags","todo:priority","todo:onhold","todo:navigate"]
     .forEach(evt => listEl.addEventListener(evt, e => console.log(evt, e.detail)));
 </script>
 </body>

@@ -38,12 +38,15 @@ CLOSED: [2025-08-30 Sat 14:03]
 CLOSED: [2025-08-30 Sat 16:04]
 ** TODO make todos into anchor tags, giving them a url they navigate to on Enter or click (if not clicking on any element on top, meta labels)
 ** TODO space or click label should show dropdown-ish of options
+** TODO add visual indicator on hover the meta labels, indicating that they are clickable
 ** TODO schedule jank, can't select unless using calendar, should be able to select by going through day/month/year by keyboard + enter
 Quits when I hit up or down arrow, or try to enter any number where there's focus. Enter does nothing. Cancel works as expected.
+** TODO jank editing text for parent
 ** TODO change "schedule" to "due on"
 changing key from "s" to "d"
 ** TODO add "on hold" state, as an additional tag in front of the state label
 Toggle on key "h", or click meta label "on hold
+** TODO centered layout does not work as I intended
 ** TODO add a button to enable edit state, should only show on hover
 DEADLINE: <2025-08-30 Sat> SCHEDULED: <2025-08-30 Sat>
 ** TODO enter or click on todo navigates to the todo
