@@ -60,10 +60,14 @@ class TodoList {
       // Set schedule with 's' key
       if(e.key==="s" && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        this.emit("todo:schedule", {
-          id: li.dataset.id,
-          text: li.querySelector(".todo-text")?.textContent
-        });
+        this.scheduleItem(li);
+        return;
+      }
+
+      // Assign with 'a' key
+      if(e.key==="a" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.assignItem(li);
         return;
       }
 
@@ -97,19 +101,27 @@ class TodoList {
         this.toggleItem(li);
       }
 
+      // Cycle states with Shift + left/right arrows
+      if(e.key==="ArrowLeft" && e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.cycleTodoStateBackward(li);
+        return;
+      }
+
+      if(e.key==="ArrowRight" && e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.cycleTodoStateForward(li);
+        return;
+      }
+
       // Navigate
       if(e.key==="ArrowDown") {
         e.preventDefault();
         if(idx < siblings.length - 1) {
           siblings[idx+1].focus();
         } else {
-          // last child, move to next of parent if exists
-          const parentLi = li.parentNode.closest("li");
-          if(parentLi) {
-            const parentSiblings = Array.from(parentLi.parentNode.children).filter(c=>c.tagName==="LI");
-            const parentIdx = parentSiblings.indexOf(parentLi);
-            if(parentIdx < parentSiblings.length - 1) parentSiblings[parentIdx+1].focus();
-          }
+          // last child, move to next available item by traversing up the hierarchy
+          this.navigateToNextItem(li);
         }
       }
 
@@ -191,13 +203,40 @@ class TodoList {
   getSiblings(li){ return Array.from(li.parentNode.children).filter(c=>c.tagName==="LI"); }
 
   toggleItem(li) {
-    const completed = li.classList.toggle("completed");
     const label = li.querySelector(".todo-label");
-    if (label) label.textContent = completed ? "DONE" : "TODO";
+    if (!label) return;
+
+    // Determine current state and cycle to next
+    let currentState, nextState;
+    
+    if (li.classList.contains("completed")) {
+      // DONE → no label
+      currentState = "completed";
+      nextState = "none";
+      li.classList.remove("completed");
+      li.classList.add("no-label");
+      label.style.display = "none";
+    } else if (li.classList.contains("no-label")) {
+      // no label → TODO
+      currentState = "none";
+      nextState = "todo";
+      li.classList.remove("no-label");
+      label.style.display = "";
+      label.textContent = "TODO";
+    } else {
+      // TODO → DONE
+      currentState = "todo";
+      nextState = "completed";
+      li.classList.add("completed");
+      label.textContent = "DONE";
+    }
 
     this.emit("todo:toggle", {
       id: li.dataset.id,
-      completed: li.classList.contains("completed")
+      from: currentState,
+      to: nextState,
+      completed: li.classList.contains("completed"),
+      hasLabel: !li.classList.contains("no-label")
     });
 
     let parentLi = li.parentNode.closest("li");
@@ -302,7 +341,9 @@ class TodoList {
 
     // Count direct children
     const children = Array.from(sublist.children).filter(c => c.tagName === "LI");
-    const doneCount = children.filter(c => c.classList.contains("completed")).length;
+    // Only count items with labels as "completable" - no-label items are headers
+    const completableChildren = children.filter(c => !c.classList.contains("no-label"));
+    const doneCount = completableChildren.filter(c => c.classList.contains("completed")).length;
 
     if (!countSpan) {
         countSpan = document.createElement("span");
@@ -313,7 +354,13 @@ class TodoList {
         else li.appendChild(countSpan);
     }
 
-    countSpan.textContent = `[${doneCount}/${children.length}]`;
+    // Show count only if there are completable children
+    if (completableChildren.length > 0) {
+        countSpan.textContent = `[${doneCount}/${completableChildren.length}]`;
+        countSpan.style.display = "";
+    } else {
+        countSpan.style.display = "none";
+    }
   }
 
 
@@ -491,6 +538,141 @@ class TodoList {
       // Currently expanded (or normal), collapse it
       this.collapseItem(li);
     }
+  }
+
+  navigateToNextItem(li) {
+    // Traverse up the hierarchy until we find a parent with a next sibling
+    let currentLi = li;
+    
+    while (currentLi) {
+      const parentUl = currentLi.parentNode;
+      const parentLi = parentUl.closest("li");
+      
+      if (!parentLi) {
+        // We've reached the root level, no more navigation possible
+        return;
+      }
+      
+      // Get siblings of the parent
+      const parentSiblings = Array.from(parentLi.parentNode.children).filter(c => c.tagName === "LI");
+      const parentIdx = parentSiblings.indexOf(parentLi);
+      
+      if (parentIdx < parentSiblings.length - 1) {
+        // Found a parent with a next sibling, focus on it
+        parentSiblings[parentIdx + 1].focus();
+        return;
+      }
+      
+      // This parent is also the last child, continue traversing up
+      currentLi = parentLi;
+    }
+  }
+
+  cycleTodoStateForward(li) {
+    // Same as toggleItem - cycles TODO → DONE → no label → TODO
+    this.toggleItem(li);
+  }
+
+  cycleTodoStateBackward(li) {
+    const label = li.querySelector(".todo-label");
+    if (!label) return;
+
+    // Cycle backward: TODO → no label → DONE → TODO
+    let currentState, nextState;
+    
+    if (li.classList.contains("completed")) {
+      // DONE → TODO
+      currentState = "completed";
+      nextState = "todo";
+      li.classList.remove("completed");
+      label.style.display = "";
+      label.textContent = "TODO";
+    } else if (li.classList.contains("no-label")) {
+      // no label → DONE
+      currentState = "none";
+      nextState = "completed";
+      li.classList.remove("no-label");
+      li.classList.add("completed");
+      label.style.display = "";
+      label.textContent = "DONE";
+    } else {
+      // TODO → no label
+      currentState = "todo";
+      nextState = "none";
+      li.classList.add("no-label");
+      label.style.display = "none";
+    }
+
+    this.emit("todo:toggle", {
+      id: li.dataset.id,
+      from: currentState,
+      to: nextState,
+      completed: li.classList.contains("completed"),
+      hasLabel: !li.classList.contains("no-label")
+    });
+
+    let parentLi = li.parentNode.closest("li");
+    while(parentLi) {
+      this.updateChildCount(parentLi);
+      parentLi = parentLi.parentNode.closest("li");
+    }
+  }
+
+  scheduleItem(li) {
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+
+    // Get or create schedule indicator
+    let scheduleSpan = li.querySelector(".todo-schedule");
+    if (!scheduleSpan) {
+      scheduleSpan = document.createElement("span");
+      scheduleSpan.className = "todo-schedule";
+      textSpan.after(scheduleSpan);
+    }
+
+    // Add current timestamp (for demo - in real implementation this would be user input)
+    const now = new Date();
+    const timestamp = now.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    scheduleSpan.textContent = ` ⏰ ${timestamp}`;
+
+    this.emit("todo:schedule", {
+      id: li.dataset.id,
+      text: textSpan.textContent,
+      timestamp: now.toISOString()
+    });
+  }
+
+  assignItem(li) {
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+
+    // Get or create assign indicator
+    let assignSpan = li.querySelector(".todo-assign");
+    if (!assignSpan) {
+      assignSpan = document.createElement("span");
+      assignSpan.className = "todo-assign";
+      textSpan.after(assignSpan);
+    }
+
+    // For demo purposes, cycle through some example assignees
+    const assignees = ["@alice", "@bob", "@charlie", "@diana"];
+    const currentAssignee = assignSpan.textContent.replace(" 👤 ", "");
+    const currentIndex = assignees.indexOf(currentAssignee);
+    const nextIndex = (currentIndex + 1) % assignees.length;
+    const nextAssignee = assignees[nextIndex];
+    
+    assignSpan.textContent = ` 👤 ${nextAssignee}`;
+
+    this.emit("todo:assign", {
+      id: li.dataset.id,
+      text: textSpan.textContent,
+      assignee: nextAssignee
+    });
   }
 
   emit(name,detail){ this.el.dispatchEvent(new CustomEvent(name,{detail})); }

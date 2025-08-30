@@ -7,12 +7,30 @@ CLOSED: [2025-08-29 fr. 23:05]
 CLOSED: [2025-08-30 Sat 08:45]
 https://chatgpt.com/c/68b204d9-610c-8332-86c8-1617eb94f38f
 
-** TODO allow having no TODO label, just use as grouping header
+** DONE allow renaming inline
+CLOSED: [2025-08-30 Sat 08:55]
+** DONE shift+arrows left/right should also cycle state
+CLOSED: [2025-08-30 Sat 08:59]
+** DONE allow having no TODO label, just use as grouping header
+CLOSED: [2025-08-30 Sat 08:59]
 Would still have a perma
+** TODO schedule
+- [X] "s" adds and emits event
+- [ ] some thing on hover that you can click
+- [ ] on schedule shows calendar for selection
+- [ ] styling the schedule label
+** TODO assigned
+- [X] "a" adds and emits event
+- [ ] some thing on hover that you can click
+- [ ] on assign shows dropdown with options
+- [ ] styling the assign label
+** TODO tags
+- [ ] "t" adds and emits event (change to use only space and shift+arrows for state change)
+- [ ] some thing on hover that you can click
+- [ ] on assign shows dropdown with options
+- [ ] styling the assign label
+** TODO space should show dropdown-ish of label options
 ** TODO enter or click on todo navigates to the todo
-** TODO allow renaming inline
-** TODO show schedule/deadline
-** TODO show assigned to
 ** TODO need a single key to cycle expand collapse
 SCHEDULED: <2025-08-29 fr.>
 ** TODO create new input at the bottom, behind subtle link button

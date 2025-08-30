@@ -36,6 +36,14 @@
       }
     }
 
+    /* No label state - outline header style */
+    &.no-label {
+      > .todo-text {
+        font-weight: bold;
+        color: #f8f8f2; /* Brighter color for headers */
+      }
+    }
+
     /* Trailing triangle for collapsed state */
     &.collapsed::after {
       content: " ▾"; /* triangle symbol for collapsed with space */
@@ -64,6 +72,21 @@
   .child-count {
     font-size: 0.85em;
     color: #888;
+    margin-left: 0.5em;
+    user-select: none;
+  }
+
+  /* Schedule and assign indicators */
+  .todo-schedule {
+    font-size: 0.85em;
+    color: #e6db74; /* Yellow for schedule */
+    margin-left: 0.5em;
+    user-select: none;
+  }
+
+  .todo-assign {
+    font-size: 0.85em;
+    color: #a6e22e; /* Green for assign */
     margin-left: 0.5em;
     user-select: none;
   }
