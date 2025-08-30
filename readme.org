@@ -71,12 +71,13 @@ CLOSED: [2025-08-30 Sat 17:09]
 CLOSED: [2025-08-30 Sat 17:59]
 ** DONE centered layout does not work as I intended
 CLOSED: [2025-08-30 Sat 18:10]
-** TODO awesome strikethrough animation, a joy to complete tasks
 ** TODO space or click label should show dropdown-ish of options
+** TODO remove bold for "heading"
 ** TODO schedule jank, can't select unless using calendar, should be able to select by going through day/month/year by keyboard + enter
 Quits when I hit up or down arrow, or try to enter any number where there's focus. Enter does nothing. Cancel works as expected.
-** TODO make counter 1/5 etc be a cake diagram, or change to cyan color when 100%
 ** TODO supporting custom set of TODO state labels for processes
+** TODO adding tests, how to unit test this well, encoding all the rules/features as tests?
+And how to run the tests?
 ** TODO jank editing text for parent
 ** TODO some jank around the counter, does not work for grandparent?
 ** TODO even cleaner styling

@@ -72,8 +72,22 @@ class TodoList {
         return; // Let button handle its own click
       }
 
+      // Check if click is on edit input (don't navigate when editing)
+      if (e.target.classList.contains("todo-edit-input")) {
+        return; // Let edit input handle its own clicks
+      }
+
       // Navigate to solo view when clicking anywhere on the todo item
       console.log("Todo item clicked", li.dataset.id);
+      const todoId = li.dataset.id;
+      const todoText = li.querySelector(".todo-text").textContent;
+      const todoStatus = li.classList.contains("completed") ? "completed" : 
+                        li.classList.contains("no-label") ? "heading" : "todo";
+      
+      // Navigate to todo detail page with URL parameters
+      const url = `todo.html?id=${encodeURIComponent(todoId)}&text=${encodeURIComponent(todoText)}&status=${encodeURIComponent(todoStatus)}`;
+      window.location.href = url;
+      
       this.emit("todo:navigate", {
         id: li.dataset.id,
         text: li.querySelector(".todo-text").textContent
@@ -151,6 +165,15 @@ class TodoList {
       // Navigate to solo view with Enter
       if(e.key==="Enter" && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
+        const todoId = li.dataset.id;
+        const todoText = li.querySelector(".todo-text")?.textContent;
+        const todoStatus = li.classList.contains("completed") ? "completed" : 
+                          li.classList.contains("no-label") ? "heading" : "todo";
+        
+        // Navigate to todo detail page with URL parameters
+        const url = `todo.html?id=${encodeURIComponent(todoId)}&text=${encodeURIComponent(todoText)}&status=${encodeURIComponent(todoStatus)}`;
+        window.location.href = url;
+        
         this.emit("todo:navigate", {
           id: li.dataset.id,
           text: li.querySelector(".todo-text")?.textContent
