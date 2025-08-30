@@ -28,7 +28,7 @@ Would still have a perma
 - [ ] "t" adds and emits event (change to use only space and shift+arrows for state change)
 - [ ] some thing on hover that you can click
 - [ ] on assign shows dropdown with options
-- [ ] styling the assign label
+- [ ] styling the tags label
 ** TODO space should show dropdown-ish of label options
 ** TODO enter or click on todo navigates to the todo
 ** TODO need a single key to cycle expand collapse

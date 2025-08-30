@@ -5,7 +5,10 @@ class TodoList {
   }
 
   init() {
-    this.el.querySelectorAll("li").forEach(li => li.tabIndex=0);
+    this.el.querySelectorAll("li").forEach(li => {
+      li.tabIndex = 0;
+      this.addHoverButtons(li);
+    });
     this.bindEvents();
   }
 
@@ -50,10 +53,10 @@ class TodoList {
         return;
       }
 
-      // Toggle complete with 't' key
+      // Add/cycle tags with 't' key
       if(e.key==="t" && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        this.toggleItem(li);
+        this.tagItem(li);
         return;
       }
 
@@ -265,6 +268,9 @@ class TodoList {
     li.appendChild(label);
     li.appendChild(document.createTextNode(" "));
     li.appendChild(spanText);
+
+    // Add hover buttons
+    this.addHoverButtons(li);
 
     if (parentLi) {
       let sublist = parentLi.querySelector("ul");
@@ -499,17 +505,20 @@ class TodoList {
     spanText.className = "todo-text";
     spanText.textContent = "New todo";
     
-    newLi.appendChild(label);
+        newLi.appendChild(label);
     // Add a space between label and text (like in HTML)
     newLi.appendChild(document.createTextNode(" "));
     newLi.appendChild(spanText);
-    
+
+    // Add hover buttons
+    this.addHoverButtons(newLi);
+
     // Insert after current li
     li.after(newLi);
-    
+
     // Update parent child count if needed
     if (parentLi) this.updateChildCount(parentLi);
-    
+
     // Enter edit mode immediately
     this.enterEditMode(newLi);
     
@@ -634,11 +643,9 @@ class TodoList {
     const now = new Date();
     const timestamp = now.toLocaleDateString('en-US', { 
       month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric'
     });
-    scheduleSpan.textContent = ` ⏰ ${timestamp}`;
+    scheduleSpan.textContent = ` ${timestamp}`;
 
     this.emit("todo:schedule", {
       id: li.dataset.id,
@@ -660,18 +667,348 @@ class TodoList {
     }
 
     // For demo purposes, cycle through some example assignees
-    const assignees = ["@alice", "@bob", "@charlie", "@diana"];
-    const currentAssignee = assignSpan.textContent.replace(" 👤 ", "");
+    const assignees = ["alice", "bob", "charlie", "diana"];
+    const currentAssignee = assignSpan.textContent.trim();
     const currentIndex = assignees.indexOf(currentAssignee);
     const nextIndex = (currentIndex + 1) % assignees.length;
     const nextAssignee = assignees[nextIndex];
     
-    assignSpan.textContent = ` 👤 ${nextAssignee}`;
+    assignSpan.textContent = ` ${nextAssignee}`;
 
     this.emit("todo:assign", {
       id: li.dataset.id,
       text: textSpan.textContent,
       assignee: nextAssignee
+    });
+  }
+
+  tagItem(li) {
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+
+    // Get or create tags indicator
+    let tagsSpan = li.querySelector(".todo-tags");
+    if (!tagsSpan) {
+      tagsSpan = document.createElement("span");
+      tagsSpan.className = "todo-tags";
+      textSpan.after(tagsSpan);
+    }
+
+    // For demo purposes, cycle through some example tag combinations
+    const tagSets = [
+      ["urgent"],
+      ["urgent", "bug"],
+      ["feature"],
+      ["feature", "ui"],
+      ["docs"],
+      []  // no tags
+    ];
+    
+    const currentTags = tagsSpan.textContent.trim();
+    const currentIndex = tagSets.findIndex(tags => 
+      tags.length === 0 ? currentTags === "" : currentTags === ` ${tags.join(" ")}`
+    );
+    const nextIndex = (currentIndex + 1) % tagSets.length;
+    const nextTags = tagSets[nextIndex];
+    
+    tagsSpan.textContent = nextTags.length > 0 ? ` ${nextTags.join(" ")}` : "";
+
+    this.emit("todo:tags", {
+      id: li.dataset.id,
+      text: textSpan.textContent,
+      tags: nextTags
+    });
+  }
+
+  addHoverButtons(li) {
+    // Don't add buttons if they already exist
+    if (li.querySelector(".todo-hover-buttons")) return;
+
+    const buttonsContainer = document.createElement("div");
+    buttonsContainer.className = "todo-hover-buttons";
+
+    // Schedule button
+    const scheduleBtn = document.createElement("button");
+    scheduleBtn.className = "hover-button";
+    scheduleBtn.textContent = "S";
+    scheduleBtn.title = "Schedule";
+    scheduleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.showSchedulePopup(li, scheduleBtn);
+    });
+
+    // Assign button
+    const assignBtn = document.createElement("button");
+    assignBtn.className = "hover-button";
+    assignBtn.textContent = "A";
+    assignBtn.title = "Assign";
+    assignBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.showAssignPopup(li, assignBtn);
+    });
+
+    // Tags button
+    const tagsBtn = document.createElement("button");
+    tagsBtn.className = "hover-button";
+    tagsBtn.textContent = "T";
+    tagsBtn.title = "Tags";
+    tagsBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.showTagsPopup(li, tagsBtn);
+    });
+
+    buttonsContainer.appendChild(scheduleBtn);
+    buttonsContainer.appendChild(assignBtn);
+    buttonsContainer.appendChild(tagsBtn);
+    
+    li.appendChild(buttonsContainer);
+  }
+
+  closeAllPopups() {
+    document.querySelectorAll('.todo-popup').forEach(popup => popup.remove());
+  }
+
+  positionPopup(popup, button) {
+    // Append to the todo list container, not document.body
+    this.el.style.position = 'relative'; // Ensure container is positioned
+    this.el.appendChild(popup);
+    
+    // Get button position relative to the list container
+    const containerRect = this.el.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    
+    const left = buttonRect.left - containerRect.left;
+    const top = buttonRect.bottom - containerRect.top + 5;
+    
+    popup.style.left = `${left}px`;
+    popup.style.top = `${top}px`;
+  }
+
+  showSchedulePopup(li, button) {
+    this.closeAllPopups();
+    
+    const popup = document.createElement('div');
+    popup.className = 'todo-popup date-popup';
+    
+    // Date input
+    const dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.className = 'dropdown-input';
+    
+    // Set default to today
+    const today = new Date();
+    dateInput.value = today.toISOString().split('T')[0];
+    
+    popup.appendChild(dateInput);
+    
+    // Handle date selection
+    dateInput.addEventListener('change', (e) => {
+      if (e.target.value) {
+        const selectedDate = new Date(e.target.value + 'T00:00:00');
+        this.setScheduleDate(li, selectedDate);
+        this.closeAllPopups();
+      }
+    });
+    
+    dateInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeAllPopups();
+      }
+    });
+    
+    // Position popup relative to the list container
+    this.positionPopup(popup, button);
+    
+    // Focus the input
+    setTimeout(() => dateInput.focus(), 0);
+    
+    // Close on outside click
+    setTimeout(() => {
+      document.addEventListener('click', (e) => {
+        if (!popup.contains(e.target)) {
+          this.closeAllPopups();
+        }
+      }, { once: true });
+    }, 0);
+  }
+
+  setScheduleDate(li, date) {
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+
+    let scheduleSpan = li.querySelector(".todo-schedule");
+    if (!scheduleSpan) {
+      scheduleSpan = document.createElement("span");
+      scheduleSpan.className = "todo-schedule";
+      textSpan.after(scheduleSpan);
+    }
+
+    const timestamp = date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric'
+    });
+    scheduleSpan.textContent = ` ${timestamp}`;
+
+    this.emit("todo:schedule", {
+      id: li.dataset.id,
+      text: textSpan.textContent,
+      timestamp: date.toISOString()
+    });
+  }
+
+  showAssignPopup(li, button) {
+    this.closeAllPopups();
+    
+    const popup = document.createElement('div');
+    popup.className = 'todo-popup dropdown-popup';
+    
+    // Input for new assignee
+    const input = document.createElement('input');
+    input.className = 'dropdown-input';
+    input.placeholder = 'Enter assignee name...';
+    popup.appendChild(input);
+    
+    // Predefined assignees
+    const assignees = ['alice', 'bob', 'charlie', 'diana', 'eve'];
+    assignees.forEach(assignee => {
+      const item = document.createElement('div');
+      item.className = 'dropdown-item';
+      item.textContent = assignee;
+      item.addEventListener('click', () => {
+        this.setAssignee(li, assignee);
+        this.closeAllPopups();
+      });
+      popup.appendChild(item);
+    });
+    
+    // Handle input
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const value = input.value.trim();
+        if (value) {
+          this.setAssignee(li, value);
+          this.closeAllPopups();
+        }
+      } else if (e.key === 'Escape') {
+        this.closeAllPopups();
+      }
+    });
+    
+    // Position popup relative to the list container
+    this.positionPopup(popup, button);
+    
+    input.focus();
+    
+    // Close on outside click
+    setTimeout(() => {
+      document.addEventListener('click', (e) => {
+        if (!popup.contains(e.target)) {
+          this.closeAllPopups();
+        }
+      }, { once: true });
+    }, 0);
+  }
+
+  setAssignee(li, assignee) {
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+
+    let assignSpan = li.querySelector(".todo-assign");
+    if (!assignSpan) {
+      assignSpan = document.createElement("span");
+      assignSpan.className = "todo-assign";
+      textSpan.after(assignSpan);
+    }
+
+    assignSpan.textContent = ` ${assignee}`;
+
+    this.emit("todo:assign", {
+      id: li.dataset.id,
+      text: textSpan.textContent,
+      assignee: assignee
+    });
+  }
+
+  showTagsPopup(li, button) {
+    this.closeAllPopups();
+    
+    const popup = document.createElement('div');
+    popup.className = 'todo-popup dropdown-popup';
+    
+    // Input for new tag
+    const input = document.createElement('input');
+    input.className = 'dropdown-input';
+    input.placeholder = 'Enter tags (space separated)...';
+    popup.appendChild(input);
+    
+    // Predefined tag sets
+    const tagSets = [
+      ['urgent'],
+      ['urgent', 'bug'],
+      ['feature'],
+      ['feature', 'ui'],
+      ['docs'],
+      ['review'],
+      ['testing']
+    ];
+    
+    tagSets.forEach(tags => {
+      const item = document.createElement('div');
+      item.className = 'dropdown-item';
+      item.textContent = tags.join(' ');
+      item.addEventListener('click', () => {
+        this.setTags(li, tags);
+        this.closeAllPopups();
+      });
+      popup.appendChild(item);
+    });
+    
+    // Handle input
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const value = input.value.trim();
+        if (value) {
+          const tags = value.split(/\s+/).filter(tag => tag.length > 0);
+          this.setTags(li, tags);
+          this.closeAllPopups();
+        }
+      } else if (e.key === 'Escape') {
+        this.closeAllPopups();
+      }
+    });
+    
+    // Position popup relative to the list container
+    this.positionPopup(popup, button);
+    
+    input.focus();
+    
+    // Close on outside click
+    setTimeout(() => {
+      document.addEventListener('click', (e) => {
+        if (!popup.contains(e.target)) {
+          this.closeAllPopups();
+        }
+      }, { once: true });
+    }, 0);
+  }
+
+  setTags(li, tags) {
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+
+    let tagsSpan = li.querySelector(".todo-tags");
+    if (!tagsSpan) {
+      tagsSpan = document.createElement("span");
+      tagsSpan.className = "todo-tags";
+      textSpan.after(tagsSpan);
+    }
+
+    tagsSpan.textContent = tags.length > 0 ? ` ${tags.join(' ')}` : "";
+
+    this.emit("todo:tags", {
+      id: li.dataset.id,
+      text: textSpan.textContent,
+      tags: tags
     });
   }
 

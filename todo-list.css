@@ -76,17 +76,24 @@
     user-select: none;
   }
 
-  /* Schedule and assign indicators */
+  /* Schedule and assign indicators - clean styling */
   .todo-schedule {
     font-size: 0.85em;
-    color: #e6db74; /* Yellow for schedule */
+    color: #888; /* Subtle gray */
     margin-left: 0.5em;
     user-select: none;
   }
 
   .todo-assign {
     font-size: 0.85em;
-    color: #a6e22e; /* Green for assign */
+    color: #888; /* Subtle gray */
+    margin-left: 0.5em;
+    user-select: none;
+  }
+
+  .todo-tags {
+    font-size: 0.85em;
+    color: #888; /* Subtle gray */
     margin-left: 0.5em;
     user-select: none;
   }
@@ -115,6 +122,93 @@
   /* Hide text span when in edit mode */
   li.editing .todo-text {
     display: none;
+  }
+
+  /* Hover buttons for interactive features */
+  .todo-hover-buttons {
+    display: none;
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    gap: 0.25rem;
+    z-index: 10;
+  }
+
+  li:hover .todo-hover-buttons {
+    display: flex;
+  }
+
+  .hover-button {
+    background: #333;
+    border: 1px solid #555;
+    color: #ddd;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75em;
+    cursor: pointer;
+    border-radius: 2px;
+    user-select: none;
+
+    &:hover {
+      background: #444;
+      border-color: #666;
+    }
+
+    &:active {
+      background: #222;
+    }
+  }
+
+  /* Interactive popups */
+  .todo-popup {
+    position: absolute;
+    background: #2d2d2d;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 0.5rem;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+  }
+
+  /* Date popup - simple date input */
+  .date-popup {
+    min-width: 150px;
+  }
+
+  /* Dropdown popup */
+  .dropdown-popup {
+    .dropdown-item {
+      padding: 0.4rem 0.6rem;
+      cursor: pointer;
+      border-radius: 2px;
+      color: #ddd;
+      
+      &:hover {
+        background: #444;
+      }
+      
+      &.selected {
+        background: #66d9ef;
+        color: black;
+      }
+    }
+    
+    .dropdown-input {
+      width: 100%;
+      background: #333;
+      border: 1px solid #555;
+      color: #ddd;
+      padding: 0.4rem;
+      margin-bottom: 0.5rem;
+      border-radius: 2px;
+      font-family: inherit;
+      
+      &:focus {
+        outline: none;
+        border-color: #f92672;
+      }
+    }
   }
 }
 
