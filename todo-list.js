@@ -21,8 +21,8 @@ class TodoList {
         this.toggleItem(li);  // or custom behavior for label click
       } else if (e.target.classList.contains("todo-text")) {
         console.log("Text clicked", li.dataset.id);
-        // Maybe edit text, or toggle as well
-        this.toggleItem(li);
+        // Enter edit mode when clicking on text
+        this.enterEditMode(li);
       }
     });
 
@@ -30,8 +30,25 @@ class TodoList {
       const li = e.target.closest("li");
       if(!li) return;
 
+      // If any todo is in edit mode, ignore all shortcuts except for the edit input itself
+      if (this.el.querySelector("li.editing")) {
+        // Only allow edit input to handle its own events
+        if (!e.target.classList.contains("todo-edit-input")) {
+          return;
+        }
+        // If this is the edit input, let it handle its own events (Enter, Escape, etc.)
+        return;
+      }
+
       const siblings = this.getSiblings(li);
       const idx = siblings.indexOf(li);
+
+      // Enter edit mode
+      if(e.key==="e" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.enterEditMode(li);
+        return;
+      }
 
       // Toggle complete
       if(e.key==="Enter" || e.key===" ") {
@@ -258,6 +275,120 @@ class TodoList {
   }
 
 
+
+  enterEditMode(li) {
+    // Don't enter edit mode if already editing
+    if (li.classList.contains("editing")) return;
+    
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+    
+    const currentText = textSpan.textContent;
+    
+    // Create input element
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "todo-edit-input";
+    input.value = currentText;
+    
+    // Add editing class and insert input
+    li.classList.add("editing");
+    textSpan.after(input);
+    
+    // Focus and select all text
+    input.focus();
+    input.select();
+    
+    // Handle input events
+    const handleKeydown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        this.saveEdit(li, input.value);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        this.exitEditMode(li);
+      }
+    };
+    
+    const handleBlur = () => {
+      this.saveEdit(li, input.value);
+    };
+    
+    input.addEventListener("keydown", handleKeydown);
+    input.addEventListener("blur", handleBlur);
+    
+    // Store event handlers for cleanup
+    input._handleKeydown = handleKeydown;
+    input._handleBlur = handleBlur;
+    
+    this.emit("todo:edit:start", {
+      id: li.dataset.id,
+      originalText: currentText
+    });
+  }
+  
+  exitEditMode(li) {
+    const input = li.querySelector(".todo-edit-input");
+    if (!input) return;
+    
+    // Remove event listeners
+    input.removeEventListener("keydown", input._handleKeydown);
+    input.removeEventListener("blur", input._handleBlur);
+    
+    // Remove input and editing class
+    input.remove();
+    li.classList.remove("editing");
+    
+    // Restore focus to li
+    li.focus();
+    
+    this.emit("todo:edit:cancel", {
+      id: li.dataset.id
+    });
+  }
+  
+  saveEdit(li, newText) {
+    const input = li.querySelector(".todo-edit-input");
+    if (!input) return;
+    
+    const textSpan = li.querySelector(".todo-text");
+    const originalText = textSpan.textContent;
+    
+    // Trim whitespace
+    newText = newText.trim();
+    
+    // If empty, revert to original
+    if (!newText) {
+      newText = originalText;
+    }
+    
+    // Update text content
+    textSpan.textContent = newText;
+    
+    // Remove event listeners
+    input.removeEventListener("keydown", input._handleKeydown);
+    input.removeEventListener("blur", input._handleBlur);
+    
+    // Remove input and editing class
+    input.remove();
+    li.classList.remove("editing");
+    
+    // Restore focus to li
+    li.focus();
+    
+    // Emit event if text actually changed
+    if (newText !== originalText) {
+      this.emit("todo:edit:save", {
+        id: li.dataset.id,
+        originalText: originalText,
+        newText: newText
+      });
+    } else {
+      this.emit("todo:edit:cancel", {
+        id: li.dataset.id
+      });
+    }
+  }
 
   emit(name,detail){ this.el.dispatchEvent(new CustomEvent(name,{detail})); }
 }

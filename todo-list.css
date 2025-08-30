@@ -1,0 +1,118 @@
+/* Todo List Package Styles - Scoped to .todo-list */
+.todo-list {
+  /* Base list styling */
+  list-style: none;
+  padding-left: 0; /* top-level ul */
+
+  /* Nested list styling */
+  ul {
+    margin: 0;         /* remove extra margin */
+    padding-left: 1.5rem; /* indent nested todos */
+    border-left: 1px dotted #555;
+  }
+
+  /* List item styling */
+  li {
+    cursor: pointer;
+    line-height: 1.5;
+    padding: 0.3rem 0.5rem;
+    position: relative;
+
+    /* Focus highlight for keyboard navigation */
+    &:focus {
+      background: rgba(255, 255, 255, 0.1); /* subtle highlight behind text */
+      outline: none; /* remove the dotted outline */
+    }
+
+    /* Completed state */
+    &.completed {
+      > .todo-label {
+        color: #66d9ef; /* DONE label color */
+      }
+
+      > .todo-text {
+        color: #888; /* DONE text color */
+        text-decoration: line-through;
+      }
+    }
+
+    /* Parent with children indicator */
+    &.has-children::before {
+      content: "▸"; /* triangle symbol for collapsed */
+      position: absolute;
+      left: 0;
+      top: 0.15em;
+      font-size: 0.8em;
+      cursor: pointer;
+    }
+
+    &.collapsed::after {
+      content: "▾"; /* triangle symbol for expanded */
+    }
+
+    /* Flexbox layout when editing */
+    &.editing {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+  }
+
+  /* Label and text inline */
+  .todo-label {
+    font-weight: bold;
+    color: #f92672; /* TODO */
+    user-select: none;
+    margin-right: 0.5rem;
+  }
+
+  .todo-text {
+    display: inline-block;
+  }
+
+  .child-count {
+    font-size: 0.85em;
+    color: #888;
+    margin-left: 0.5em;
+    user-select: none;
+  }
+
+  /* Edit mode styles */
+  .todo-edit-input {
+    background: #2d2d2d;
+    border: 1px solid #555;
+    color: #ddd;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0.2rem 0.4rem;
+    margin: 0;
+    border-radius: 2px;
+    outline: none;
+    flex: 1; /* Take remaining space in flex container */
+    min-width: 0; /* Allow shrinking below content size */
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: #f92672;
+      background: #333;
+    }
+  }
+
+  /* Hide text span when in edit mode */
+  li.editing .todo-text {
+    display: none;
+  }
+}
+
+/* Demo page styling - not part of the package */
+body {
+  font-family: monospace;
+  margin: 2rem auto;
+  background: #1e1e1e;
+  color: #ddd;
+  max-width: 800px;
+}
+
+h1 {
+  color: #f8f8f2;
+}

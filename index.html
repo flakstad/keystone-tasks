@@ -3,99 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Todo List Demo</title>
-<style>
-  body {
-      font-family: monospace;
-      margin: 2rem auto;
-      background: #1e1e1e;
-      color: #ddd;
-      max-width: 800px;
-  }
-
-  h1 {
-      color: #f8f8f2;
-  }
-
-  ul {
-      list-style: none;
-      padding-left: 0; /* top-level ul */
-  }
-
-  ul ul {
-      margin: 0;         /* remove extra margin */
-      padding-left: 1.5rem; /* indent nested todos */
-      border-left: 1px dotted #555;
-  }
-
-  li {
-      cursor: pointer;
-      line-height: 1.5;
-      padding: 0.3rem 0.5rem;
-      position: relative;
-  }
-
-  /* Label and text inline */
-  .todo-label {
-      font-weight: bold;
-      color: #f92672; /* TODO */
-      user-select: none;
-      margin-right: 0.5rem;
-  }
-
-  .todo-text {
-      display: inline-block;
-  }
-
-
-  li.completed > .todo-label {
-      color: #66d9ef; /* DONE label color */
-  }
-
-  li.completed > .todo-text {
-      color: #888; /* DONE text color */
-      text-decoration: line-through;
-  }
-
-
-  /* Focus highlight for keyboard navigation */
-  li:focus {
-      outline: 1px dotted #f8f8f2;
-  }
-  /* Focus highlight for keyboard navigation */
-  li:focus {
-      outline: 1px dotted #f8f8f2;
-      outline-offset: 0.2em; /* gives a little space outside the text */
-  }
-  /* Focus highlight for keyboard navigation (solid background) */
-  li:focus {
-      background: rgba(255, 255, 255, 0.1); /* subtle highlight behind text */
-      outline: none; /* remove the dotted outline */
-  }
-
-  /* Optional: parent with children indicator */
-  li.has-children::before {
-      content: "▸"; /* triangle symbol for collapsed */
-      position: absolute;
-      left: 0;
-      top: 0.15em;
-      font-size: 0.8em;
-      cursor: pointer;
-  }
-
-  li.collapsed::after {
-      content: "▾"; /* triangle symbol for expanded */
-  }
-
-  .child-count {
-      font-size: 0.85em;
-      color: #888;
-      margin-left: 0.5em;
-      user-select: none;
-  }
-
-
-
-</style>
+<link rel="stylesheet" href="todo-list.css">
 </head>
 <body>
 
@@ -103,7 +11,7 @@
 
 <input id="new-todo" type="text" placeholder="Add a todo and press Enter">
 
-<ul id="todo-list">
+<ul id="todo-list" class="todo-list">
   <li data-id="1" tabindex="0">
     <span class="todo-label">TODO</span>
     <span class="todo-text">Buy milk</span>
@@ -129,9 +37,11 @@
 <div id="key-bindings">
   <strong>Key Bindings:</strong><br>
   Enter / Space → toggle complete<br>
+  E → edit todo text<br>
   Alt + ↑ / ↓ → move item<br>
   Alt + → / ← → indent / outdent<br>
-  Alt + H → collapse, Alt + L → expand
+  Alt + H → collapse, Alt + L → expand<br>
+  <em>In edit mode:</em> Enter → save, Escape → cancel
 </div>
 
 <script src="todo-list.js"></script>
@@ -147,7 +57,7 @@
   });
 
   // Example: log events
-  ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand"]
+  ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand","todo:edit:start","todo:edit:save","todo:edit:cancel"]
     .forEach(evt => listEl.addEventListener(evt, e => console.log(evt, e.detail)));
 </script>
 </body>

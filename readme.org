@@ -24,3 +24,4 @@ SCHEDULED: <2025-08-29 fr.>
 ** TODO when use with datastar, comm with server listening for events
 ** TODO awesome strikethrough animation, a joy to complete tasks
 ** TODO introduce sortablejs as well, so you can use mouse to reorder
+** TODO some sort of history and undo would be good
