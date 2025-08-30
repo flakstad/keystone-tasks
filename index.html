@@ -4,58 +4,6 @@
 <meta charset="UTF-8">
 <title>Todo List Demo</title>
 <link rel="stylesheet" href="todo-list.css">
-<style>
-  body {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 1rem;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.5;
-    background: #1a1a1a;
-    color: #ddd;
-  }
-
-  /* Responsive design for smaller screens */
-  @media (max-width: 832px) {
-    body {
-      padding: 0.5rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    body {
-      padding: 0.25rem;
-    }
-  }
-
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #f8f8f2;
-  }
-
-  #new-todo {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0.75rem;
-    margin: 1rem 0;
-    background: #2d2d2d;
-    border: 1px solid #555;
-    border-radius: 4px;
-    color: #ddd;
-    font-size: 1rem;
-  }
-
-  #new-todo:focus {
-    outline: none;
-    border-color: #f92672;
-  }
-
-  #new-todo::placeholder {
-    color: #888;
-  }
-</style>
 </head>
 <body>
 
@@ -86,6 +34,7 @@
     <span class="todo-tags" style="display: none;"> docs feature</span>
   </li>
   <li data-id="5" tabindex="0" class="no-label">
+    <span class="todo-label" style="display: none;">TODO</span>
     <span class="todo-text">Project Planning</span>
     <ul>
       <li data-id="6" tabindex="0">
@@ -109,18 +58,49 @@
   </li>
 </ul>
 
-<input id="new-todo" type="text" placeholder="Add a todo and press Enter">
+<button id="new-todo" class="hover-button">+ Add</button>
 
 <script src="todo-list.js"></script>
 <script>
   const listEl = document.getElementById("todo-list");
   const todos = new TodoList(listEl);
 
-  document.getElementById("new-todo").addEventListener("keydown", e => {
-    if(e.key === "Enter" && e.target.value.trim()) {
-      todos.addItem(e.target.value.trim());
-      e.target.value = "";
-    }
+  document.getElementById("new-todo").addEventListener("click", () => {
+    // Create a new todo item and enter edit mode immediately
+    const newLi = document.createElement("li");
+    newLi.tabIndex = 0;
+    newLi.dataset.id = crypto.randomUUID();
+
+    // Create the label span
+    const labelSpan = document.createElement("span");
+    labelSpan.className = "todo-label";
+    labelSpan.textContent = "TODO";
+    newLi.appendChild(labelSpan);
+
+    // Create the text span
+    const textSpan = document.createElement("span");
+    textSpan.className = "todo-text";
+    textSpan.textContent = "New todo";
+    newLi.appendChild(textSpan);
+
+    // Add spacing
+    newLi.appendChild(document.createTextNode(" "));
+
+    // Add hover buttons
+    todos.addHoverButtons(newLi);
+
+    // Add to the list
+    listEl.appendChild(newLi);
+
+    // Enter edit mode immediately
+    todos.enterEditMode(newLi);
+
+    // Emit add event
+    todos.emit("todo:add", { 
+      text: "New todo", 
+      id: newLi.dataset.id,
+      parentId: null
+    });
   });
 
   // Example: log events

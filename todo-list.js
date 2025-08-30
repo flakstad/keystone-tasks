@@ -420,7 +420,15 @@ class TodoList {
     const handleKeydown = (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        this.saveEdit(li, input.value);
+        if (e.altKey) {
+          // Alt+Enter: Save current edit and add new todo
+          this.saveEdit(li, input.value);
+          // Add new sibling todo after the current one and enter edit mode
+          this.addSiblingTodo(li);
+        } else {
+          // Regular Enter: Just save
+          this.saveEdit(li, input.value);
+        }
       } else if (e.key === "Escape") {
         e.preventDefault();
         this.exitEditMode(li);
@@ -862,8 +870,11 @@ class TodoList {
     }
   }
 
-  closeAllPopups() {
+  closeAllPopups(focusElement = null) {
     document.querySelectorAll('.todo-popup').forEach(popup => popup.remove());
+    if (focusElement) {
+      focusElement.focus();
+    }
   }
 
   positionPopup(popup, button) {
@@ -924,7 +935,7 @@ class TodoList {
     
     dateInput.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        this.closeAllPopups();
+        this.closeAllPopups(li);
       }
     });
     
@@ -938,7 +949,7 @@ class TodoList {
     setTimeout(() => {
       document.addEventListener('click', (e) => {
         if (!popup.contains(e.target)) {
-          this.closeAllPopups();
+          this.closeAllPopups(li);
         }
       }, { once: true });
     }, 0);
@@ -1015,7 +1026,7 @@ class TodoList {
           this.closeAllPopups();
         }
       } else if (e.key === 'Escape') {
-        this.closeAllPopups();
+        this.closeAllPopups(li);
       }
     });
     
@@ -1028,7 +1039,7 @@ class TodoList {
     setTimeout(() => {
       document.addEventListener('click', (e) => {
         if (!popup.contains(e.target)) {
-          this.closeAllPopups();
+          this.closeAllPopups(li);
         }
       }, { once: true });
     }, 0);
@@ -1111,7 +1122,7 @@ class TodoList {
           this.closeAllPopups();
         }
       } else if (e.key === 'Escape') {
-        this.closeAllPopups();
+        this.closeAllPopups(li);
       }
     });
     
@@ -1124,7 +1135,7 @@ class TodoList {
     setTimeout(() => {
       document.addEventListener('click', (e) => {
         if (!popup.contains(e.target)) {
-          this.closeAllPopups();
+          this.closeAllPopups(li);
         }
       }, { once: true });
     }, 0);

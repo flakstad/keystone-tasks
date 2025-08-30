@@ -1,3 +1,43 @@
+/* Layout for demo page */
+body {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 832px) {
+  body {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0.25rem;
+  }
+}
+
+/* Add todo button styling */
+#new-todo {
+  display: block;
+  margin: 1.5rem 0 0 0;
+  background: none;
+  border: none;
+  color: #666;
+  padding: 0;
+  font-size: 0.9em;
+  cursor: pointer;
+  user-select: none;
+  font-family: inherit;
+  text-align: left;
+}
+
+#new-todo:hover {
+  color: #888;
+}
+
 /* Todo List Package Styles - Scoped to .todo-list */
 .todo-list {
   /* Base list styling */

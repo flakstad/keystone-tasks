@@ -34,21 +34,30 @@ CLOSED: [2025-08-30 Sat 13:44]
 - [X] styling the tags label
 ** DONE setting priority, not A B C - just marked as priority. Either with A, or some star
 CLOSED: [2025-08-30 Sat 14:03]
+** TODO space or click label should show dropdown-ish of options
+** TODO schedule jank, can't select unless using calendar, should be able to select by going through day/month/year by keyboard + enter
+Quits when I hit up or down arrow, or try to enter any number where there's focus. Enter does nothing. Cancel works as expected.
 ** TODO on hold state, as an additional tag in front of the state label
 ** TODO change schedule to due on
-** TODO [#B] add a button to enable edit state, should only show on hover :test:
+** TODO add a button to enable edit state, should only show on hover
 DEADLINE: <2025-08-30 Sat> SCHEDULED: <2025-08-30 Sat>
-** TODO even cleaner styling
-** TODO space should show dropdown-ish of label options
 ** TODO enter or click on todo navigates to the todo
-** TODO need a single key to cycle expand collapse
-SCHEDULED: <2025-08-29 fr.>
-** TODO create new input at the bottom, behind subtle link button
-** TODO alt enter to add new todo
-** TODO allow entries without TODO
-** TODO shift+arrow left/right cycles todo state, or click on label
-** TODO shift+arrow up/down cycles priority - do I want this?
-** TODO tags?
+** TODO some jank around the counter, does not work for grandparent?
+** TODO even cleaner styling
+** DONE need a single key to cycle expand collapse
+CLOSED: [2025-08-30 Sat 15:56] SCHEDULED: <2025-08-29 fr.>
+** DONE create new input at the bottom, behind subtle link button
+CLOSED: [2025-08-30 Sat 15:55]
+** DONE alt enter to add new todo
+CLOSED: [2025-08-30 Sat 15:55]
+** DONE allow entries without TODO
+CLOSED: [2025-08-30 Sat 15:55]
+** DONE shift+arrow left/right cycles todo state, or click on label
+CLOSED: [2025-08-30 Sat 15:55]
+** DONE shift+arrow up/down cycles priority - do I want this?
+CLOSED: [2025-08-30 Sat 15:55]
+** DONE tags?
+CLOSED: [2025-08-30 Sat 15:55]
 ** TODO when use with datastar, handle new html reinit todolist script
 ** TODO when use with datastar, comm with server listening for events
 ** TODO awesome strikethrough animation, a joy to complete tasks
