@@ -62,19 +62,25 @@ CLOSED: [2025-08-30 Sat 15:55]
 CLOSED: [2025-08-30 Sat 15:55]
 ** DONE make DONE state have a strikethrough everything, not just the text: done label, text, any meta labels - the entire todo has a strikethrough
 CLOSED: [2025-08-30 Sat 16:44]
-** TODO make todos into anchor tags, giving them a url they navigate to on Enter or click (if not clicking on any element on top, meta labels)
+** DONE make todos into anchor tags, giving them a url they navigate to on Enter or click (if not clicking on any element on top, meta labels)
+CLOSED: [2025-08-30 Sat 17:06]
 Possible to create some dummy second html to navigate to for now, locally from index.html to todo.html and show something?
+** DONE enter or click on todo navigates to the todo
+CLOSED: [2025-08-30 Sat 17:09]
+** TODO move script to create new into todo-list.js
+** TODO some sort of history and undo would be good
+could we implement history
+** TODO centered layout does not work as I intended
+** TODO awesome strikethrough animation, a joy to complete tasks
 ** TODO space or click label should show dropdown-ish of options
 ** TODO schedule jank, can't select unless using calendar, should be able to select by going through day/month/year by keyboard + enter
 Quits when I hit up or down arrow, or try to enter any number where there's focus. Enter does nothing. Cancel works as expected.
 ** TODO make counter 1/5 etc be a cake diagram, or change to cyan color when 100%
+** TODO supporting custom set of TODO state labels for processes
 ** TODO jank editing text for parent
-** TODO centered layout does not work as I intended
-** TODO enter or click on todo navigates to the todo
 ** TODO some jank around the counter, does not work for grandparent?
 ** TODO even cleaner styling
 ** TODO when use with datastar, handle new html reinit todolist script
 ** TODO when use with datastar, comm with server listening for events
-** TODO awesome strikethrough animation, a joy to complete tasks
 ** TODO introduce sortablejs as well, so you can use mouse to reorder
-** TODO some sort of history and undo would be good
+** TODO viewing as 2D board with column per TODO state (probably out of scope)

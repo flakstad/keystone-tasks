@@ -63,6 +63,12 @@ body {
     line-height: 1.5;
     padding: 0.3rem 0.5rem;
     position: relative;
+    transition: background-color 0.15s ease;
+
+    /* Hover indication for clickable todos */
+    &:hover {
+      background: rgba(255, 255, 255, 0.05); /* Subtle hover indication */
+    }
 
     /* Focus highlight for keyboard navigation */
     &:focus {

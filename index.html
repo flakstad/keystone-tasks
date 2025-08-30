@@ -66,43 +66,7 @@
   const listEl = document.getElementById("todo-list");
   const todos = new TodoList(listEl);
 
-  document.getElementById("new-todo").addEventListener("click", () => {
-    // Create a new todo item and enter edit mode immediately
-    const newLi = document.createElement("li");
-    newLi.tabIndex = 0;
-    newLi.dataset.id = crypto.randomUUID();
 
-    // Create the label span
-    const labelSpan = document.createElement("span");
-    labelSpan.className = "todo-label";
-    labelSpan.textContent = "TODO";
-    newLi.appendChild(labelSpan);
-
-    // Create the text span
-    const textSpan = document.createElement("span");
-    textSpan.className = "todo-text";
-    textSpan.textContent = "New todo";
-    newLi.appendChild(textSpan);
-
-    // Add spacing
-    newLi.appendChild(document.createTextNode(" "));
-
-    // Add hover buttons
-    todos.addHoverButtons(newLi);
-
-    // Add to the list
-    listEl.appendChild(newLi);
-
-    // Enter edit mode immediately
-    todos.enterEditMode(newLi);
-
-    // Emit add event
-    todos.emit("todo:add", { 
-      text: "New todo", 
-      id: newLi.dataset.id,
-      parentId: null
-    });
-  });
 
   // Example: log events
   ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand","todo:edit:start","todo:edit:save","todo:edit:cancel","todo:due","todo:assign","todo:tags","todo:priority","todo:onhold","todo:navigate"]

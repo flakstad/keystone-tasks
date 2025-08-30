@@ -10,6 +10,54 @@ class TodoList {
       this.addHoverButtons(li);
     });
     this.bindEvents();
+    this.initNewTodoButton();
+  }
+
+  initNewTodoButton() {
+    const newTodoBtn = document.getElementById("new-todo");
+    if (newTodoBtn) {
+      newTodoBtn.addEventListener("click", () => {
+        this.createNewTodo();
+      });
+    }
+  }
+
+  createNewTodo() {
+    // Create a new todo item and enter edit mode immediately
+    const newLi = document.createElement("li");
+    newLi.tabIndex = 0;
+    newLi.dataset.id = crypto.randomUUID();
+
+    // Create the label span
+    const labelSpan = document.createElement("span");
+    labelSpan.className = "todo-label";
+    labelSpan.textContent = "TODO";
+    newLi.appendChild(labelSpan);
+
+    // Create the text span
+    const textSpan = document.createElement("span");
+    textSpan.className = "todo-text";
+    textSpan.textContent = "New todo";
+    newLi.appendChild(textSpan);
+
+    // Add spacing
+    newLi.appendChild(document.createTextNode(" "));
+
+    // Add hover buttons
+    this.addHoverButtons(newLi);
+
+    // Add to the list
+    this.el.appendChild(newLi);
+
+    // Enter edit mode immediately
+    this.enterEditMode(newLi);
+
+    // Emit add event
+    this.emit("todo:add", { 
+      text: "New todo", 
+      id: newLi.dataset.id,
+      parentId: null
+    });
   }
 
   bindEvents() {

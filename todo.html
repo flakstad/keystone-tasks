@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Todo Detail</title>
+<link rel="stylesheet" href="todo-list.css">
+</head>
+<body>
+
+<div style="text-align: center; margin-top: 2rem;">
+  <h1>Todo Detail View</h1>
+  
+  <div style="max-width: 600px; margin: 2rem auto; text-align: left;">
+    <h2 id="todo-title">Loading...</h2>
+    
+    <div style="margin: 1rem 0;">
+      <strong>ID:</strong> <span id="todo-id">-</span>
+    </div>
+    
+    <div style="margin: 1rem 0;">
+      <strong>Status:</strong> <span id="todo-status">-</span>
+    </div>
+    
+    <div style="margin: 1rem 0;">
+      <strong>Created:</strong> <span id="todo-created">Just now</span>
+    </div>
+    
+    <div style="margin: 2rem 0;">
+      <h3>Description</h3>
+      <p id="todo-description">This is a detailed view of the todo item. In a real application, this would show more information, allow editing, show history, etc.</p>
+    </div>
+    
+    <div style="margin: 2rem 0;">
+      <a href="index.html" style="color: #f92672; text-decoration: none;">&larr; Back to Todo List</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Parse URL parameters to show todo details
+const urlParams = new URLSearchParams(window.location.search);
+const todoId = urlParams.get('id');
+const todoText = urlParams.get('text') || 'Untitled Todo';
+const todoStatus = urlParams.get('status') || 'todo';
+
+// Update page content
+document.getElementById('todo-title').textContent = todoText;
+document.getElementById('todo-id').textContent = todoId || 'unknown';
+document.getElementById('todo-status').textContent = todoStatus.toUpperCase();
+document.title = `Todo: ${todoText}`;
+
+// Update description based on the todo
+const descriptions = {
+  '1': 'This grocery shopping task involves getting fresh produce, dairy products, and household essentials. Remember to check the pantry before leaving.',
+  '2': 'Code review completed for the new authentication feature. All tests are passing and the implementation looks solid.',
+  '3': 'Development environment setup including IDE configuration, database connections, and required dependencies.',
+  '4': 'Technical documentation for the new API endpoints and user guides for the updated features.',
+  '5': 'High-level planning phase for the upcoming project including timeline, resources, and deliverables.',
+  '6': 'Detailed requirements gathering with stakeholders to define project scope and acceptance criteria.',
+  '7': 'UI/UX wireframes and mockups for the new user interface components and user flows.',
+  '8': 'Critical bug fix for the payment processing system that was causing transaction failures.'
+};
+
+const description = descriptions[todoId] || 'This is a detailed view of the todo item. In a real application, this would show more information, allow editing, show history, etc.';
+document.getElementById('todo-description').textContent = description;
+</script>
+
+</body>
+</html>
