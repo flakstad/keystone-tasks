@@ -50,8 +50,49 @@ class TodoList {
         return;
       }
 
-      // Toggle complete
-      if(e.key==="Enter" || e.key===" ") {
+      // Toggle complete with 't' key
+      if(e.key==="t" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.toggleItem(li);
+        return;
+      }
+
+      // Set schedule with 's' key
+      if(e.key==="s" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.emit("todo:schedule", {
+          id: li.dataset.id,
+          text: li.querySelector(".todo-text")?.textContent
+        });
+        return;
+      }
+
+      // Navigate to solo view with Enter
+      if(e.key==="Enter" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.emit("todo:navigate", {
+          id: li.dataset.id,
+          text: li.querySelector(".todo-text")?.textContent
+        });
+        return;
+      }
+
+      // Create new sibling todo with Alt+Enter
+      if(e.key==="Enter" && e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.addSiblingTodo(li);
+        return;
+      }
+
+      // Cycle collapsed/expanded with Alt+Tab
+      if(e.key==="Tab" && e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.cycleCollapsedState(li);
+        return;
+      }
+
+      // Toggle complete (legacy - keeping space for compatibility)
+      if(e.key===" " && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
         this.toggleItem(li);
       }
@@ -183,6 +224,7 @@ class TodoList {
     spanText.textContent = text;
 
     li.appendChild(label);
+    li.appendChild(document.createTextNode(" "));
     li.appendChild(spanText);
 
     if (parentLi) {
@@ -387,6 +429,67 @@ class TodoList {
       this.emit("todo:edit:cancel", {
         id: li.dataset.id
       });
+    }
+  }
+
+  addSiblingTodo(li) {
+    // Find the parent container (either main ul or parent li's sublist)
+    const parentContainer = li.parentNode;
+    const parentLi = parentContainer.closest("li");
+    
+    // Create new todo item
+    const newLi = document.createElement("li");
+    newLi.tabIndex = 0;
+    newLi.dataset.id = crypto.randomUUID();
+    
+    // Create label span
+    const label = document.createElement("span");
+    label.className = "todo-label";
+    label.textContent = "TODO";
+    
+    // Create text span with placeholder
+    const spanText = document.createElement("span");
+    spanText.className = "todo-text";
+    spanText.textContent = "New todo";
+    
+    newLi.appendChild(label);
+    // Add a space between label and text (like in HTML)
+    newLi.appendChild(document.createTextNode(" "));
+    newLi.appendChild(spanText);
+    
+    // Insert after current li
+    li.after(newLi);
+    
+    // Update parent child count if needed
+    if (parentLi) this.updateChildCount(parentLi);
+    
+    // Enter edit mode immediately
+    this.enterEditMode(newLi);
+    
+    this.emit("todo:add", { 
+      text: "New todo", 
+      id: newLi.dataset.id,
+      parentId: parentLi?.dataset.id || null
+    });
+  }
+
+  cycleCollapsedState(li) {
+    const sublist = li.querySelector("ul");
+    
+    // Count actual child li elements
+    const childItems = sublist ? Array.from(sublist.children).filter(c => c.tagName === "LI") : [];
+    
+    if (childItems.length === 0) {
+      // No children, nothing to collapse/expand
+      return;
+    }
+    
+    if (li.classList.contains("collapsed")) {
+      // Currently collapsed, expand it
+      this.expandItem(li);
+    } else {
+      // Currently expanded (or normal), collapse it
+      this.collapseItem(li);
     }
   }
 

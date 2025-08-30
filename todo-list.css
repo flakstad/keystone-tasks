@@ -36,18 +36,9 @@
       }
     }
 
-    /* Parent with children indicator */
-    &.has-children::before {
-      content: "▸"; /* triangle symbol for collapsed */
-      position: absolute;
-      left: 0;
-      top: 0.15em;
-      font-size: 0.8em;
-      cursor: pointer;
-    }
-
+    /* Trailing triangle for collapsed state */
     &.collapsed::after {
-      content: "▾"; /* triangle symbol for expanded */
+      content: " ▾"; /* triangle symbol for collapsed with space */
     }
 
     /* Flexbox layout when editing */

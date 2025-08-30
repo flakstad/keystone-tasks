@@ -36,8 +36,12 @@
 
 <div id="key-bindings">
   <strong>Key Bindings:</strong><br>
-  Enter / Space → toggle complete<br>
+  T / Space → toggle TODO/DONE<br>
   E → edit todo text<br>
+  S → set schedule (emits event)<br>
+  Enter → navigate to solo view (emits event)<br>
+  Alt + Enter → add new sibling todo<br>
+  Alt + Tab → cycle collapsed/expanded<br>
   Alt + ↑ / ↓ → move item<br>
   Alt + → / ← → indent / outdent<br>
   Alt + H → collapse, Alt + L → expand<br>
@@ -57,7 +61,7 @@
   });
 
   // Example: log events
-  ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand","todo:edit:start","todo:edit:save","todo:edit:cancel"]
+  ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand","todo:edit:start","todo:edit:save","todo:edit:cancel","todo:schedule","todo:navigate"]
     .forEach(evt => listEl.addEventListener(evt, e => console.log(evt, e.detail)));
 </script>
 </body>

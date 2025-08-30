@@ -3,11 +3,12 @@
 CLOSED: [2025-08-29 fr. 22:58]
 ** DONE showing brackets and count of children finished
 CLOSED: [2025-08-29 fr. 23:05]
-** TODO redo keyboard shortcuts to use single letter: t, a, s, ..
+** DONE redo keyboard shortcuts to use single letter: t, a, s, ..
+CLOSED: [2025-08-30 Sat 08:45]
 https://chatgpt.com/c/68b204d9-610c-8332-86c8-1617eb94f38f
+
 ** TODO allow having no TODO label, just use as grouping header
 Would still have a perma
-** TODO default expand/collapse is Enter for details/summary
 ** TODO enter or click on todo navigates to the todo
 ** TODO allow renaming inline
 ** TODO show schedule/deadline
