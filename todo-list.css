@@ -47,9 +47,14 @@ body {
   /* Nested list styling */
   ul {
     margin: 0;         /* remove extra margin */
-    padding-left: 1.5rem; /* indent nested todos */
+    padding-left: 0.75rem; /* indent nested todos */
     border-left: 1px dotted #555;
     list-style: none;  /* remove bullets from nested lists */
+
+    /* Add spacing before first nested child */
+    li:first-child {
+      margin-top: 0.5rem;
+    }
   }
 
   /* List item styling */
