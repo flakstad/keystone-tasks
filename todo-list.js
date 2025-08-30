@@ -680,6 +680,7 @@ class TodoList {
     const scheduleBtn = document.createElement("button");
     scheduleBtn.className = "hover-button schedule-button";
     scheduleBtn.setAttribute("data-type", "schedule");
+    scheduleBtn.tabIndex = -1; // Remove from tab navigation
     scheduleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.showSchedulePopup(li, scheduleBtn);
@@ -689,6 +690,7 @@ class TodoList {
     const assignBtn = document.createElement("button");
     assignBtn.className = "hover-button assign-button";
     assignBtn.setAttribute("data-type", "assign");
+    assignBtn.tabIndex = -1; // Remove from tab navigation
     assignBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.showAssignPopup(li, assignBtn);
@@ -698,6 +700,7 @@ class TodoList {
     const tagsBtn = document.createElement("button");
     tagsBtn.className = "hover-button tags-button";
     tagsBtn.setAttribute("data-type", "tags");
+    tagsBtn.tabIndex = -1; // Remove from tab navigation
     tagsBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.showTagsPopup(li, tagsBtn);
@@ -742,7 +745,7 @@ class TodoList {
     // Update assign button
     const assignSpan = li.querySelector(".todo-assign");
     if (assignSpan && assignSpan.textContent.trim()) {
-      assignBtn.textContent = assignSpan.textContent.trim();
+      assignBtn.textContent = `@${assignSpan.textContent.trim()}`;
       assignBtn.classList.add("has-data");
       hasAnyData = true;
     } else {
@@ -753,7 +756,8 @@ class TodoList {
     // Update tags button
     const tagsSpan = li.querySelector(".todo-tags");
     if (tagsSpan && tagsSpan.textContent.trim()) {
-      tagsBtn.textContent = tagsSpan.textContent.trim();
+      const tags = tagsSpan.textContent.trim().split(' ').filter(tag => tag.length > 0);
+      tagsBtn.textContent = tags.map(tag => `#${tag}`).join(' ');
       tagsBtn.classList.add("has-data");
       hasAnyData = true;
     } else {

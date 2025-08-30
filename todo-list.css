@@ -9,6 +9,7 @@
     margin: 0;         /* remove extra margin */
     padding-left: 1.5rem; /* indent nested todos */
     border-left: 1px dotted #555;
+    list-style: none;  /* remove bullets from nested lists */
   }
 
   /* List item styling */
@@ -157,6 +158,7 @@
     user-select: none;
     white-space: nowrap;
     font-family: inherit;
+    outline: none; /* Remove focus outline */
 
     &:hover {
       color: #888;
