@@ -72,13 +72,26 @@ body {
 
     /* Completed state */
     &.completed {
+      position: relative; /* For pseudo-element positioning */
+      
       > .todo-label {
         color: #66d9ef; /* DONE label color */
       }
 
       > .todo-text {
         color: #888; /* DONE text color */
-        text-decoration: line-through;
+      }
+
+      /* Single continuous strikethrough line across entire todo */
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0.25rem; /* Add left padding */
+        right: 0.25rem; /* Stop before right edge, leaving space for potential content */
+        top: 50%;
+        height: 1px;
+        background-color: #888;
+        pointer-events: none; /* Don't interfere with clicking */
       }
     }
 
@@ -108,16 +121,12 @@ body {
     font-weight: bold;
     color: #f92672; /* TODO */
     user-select: none;
-    margin-right: 0.5rem;
+    margin-right: 0.3rem; /* Reduced from 0.5rem */
   }
 
   .todo-text {
     display: inline-block;
   }
-
-
-
-
 
   .child-count {
     font-size: 0.85em;
@@ -210,7 +219,7 @@ body {
     outline: none; /* Remove focus outline */
 
     &:hover {
-      color: #888;
+      color: #bbb !important; /* Whiter on hover to indicate clickability, override other hover colors */
     }
 
     /* Style when button has data */
@@ -230,18 +239,10 @@ body {
       font-weight: bold;
     }
 
-    &.priority-button.has-data:hover {
-      color: #ff8555; /* Lighter on hover */
-    }
-
     /* On hold button special styling when active */
     &.onhold-button.has-data {
       color: #f39c12; /* Orange color for on hold */
       font-weight: bold;
-    }
-
-    &.onhold-button.has-data:hover {
-      color: #f4a942; /* Lighter orange on hover */
     }
   }
 

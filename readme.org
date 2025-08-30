@@ -36,36 +36,43 @@ CLOSED: [2025-08-30 Sat 13:44]
 CLOSED: [2025-08-30 Sat 14:03]
 ** DONE spacing for nested children
 CLOSED: [2025-08-30 Sat 16:04]
-** TODO make todos into anchor tags, giving them a url they navigate to on Enter or click (if not clicking on any element on top, meta labels)
-** TODO space or click label should show dropdown-ish of options
-** TODO add visual indicator on hover the meta labels, indicating that they are clickable
-** TODO schedule jank, can't select unless using calendar, should be able to select by going through day/month/year by keyboard + enter
-Quits when I hit up or down arrow, or try to enter any number where there's focus. Enter does nothing. Cancel works as expected.
-** TODO jank editing text for parent
-** TODO change "schedule" to "due on"
+** DONE add visual indicator on hover the meta labels, indicating that they are clickable
+CLOSED: [2025-08-30 Sat 16:38]
+** DONE change "schedule" to "due on"
+CLOSED: [2025-08-30 Sat 16:38]
 changing key from "s" to "d"
-** TODO add "on hold" state, as an additional tag in front of the state label
+** DONE add "on hold" state, as an additional tag in front of the state label
+CLOSED: [2025-08-30 Sat 16:38]
 Toggle on key "h", or click meta label "on hold
-** TODO centered layout does not work as I intended
-** TODO add a button to enable edit state, should only show on hover
-DEADLINE: <2025-08-30 Sat> SCHEDULED: <2025-08-30 Sat>
-** TODO enter or click on todo navigates to the todo
-** TODO some jank around the counter, does not work for grandparent?
-** TODO even cleaner styling
+** DONE add a button to enable edit state, should only show on hover
+CLOSED: [2025-08-30 Sat 16:38] DEADLINE: <2025-08-30 Sat> SCHEDULED: <2025-08-30 Sat>
 ** DONE need a single key to cycle expand collapse
 CLOSED: [2025-08-30 Sat 15:56] SCHEDULED: <2025-08-29 fr.>
 ** DONE create new input at the bottom, behind subtle link button
 CLOSED: [2025-08-30 Sat 15:55]
-** DONE alt enter to add new todo
-CLOSED: [2025-08-30 Sat 15:55]
 ** DONE allow entries without TODO
 CLOSED: [2025-08-30 Sat 15:55]
-** DONE shift+arrow left/right cycles todo state, or click on label
+** DONE alt enter to add new todo
 CLOSED: [2025-08-30 Sat 15:55]
 ** DONE shift+arrow up/down cycles priority - do I want this?
 CLOSED: [2025-08-30 Sat 15:55]
+** DONE shift+arrow left/right cycles todo state, or click on label
+CLOSED: [2025-08-30 Sat 15:55]
 ** DONE tags?
 CLOSED: [2025-08-30 Sat 15:55]
+** DONE make DONE state have a strikethrough everything, not just the text: done label, text, any meta labels - the entire todo has a strikethrough
+CLOSED: [2025-08-30 Sat 16:44]
+** TODO make todos into anchor tags, giving them a url they navigate to on Enter or click (if not clicking on any element on top, meta labels)
+Possible to create some dummy second html to navigate to for now, locally from index.html to todo.html and show something?
+** TODO space or click label should show dropdown-ish of options
+** TODO schedule jank, can't select unless using calendar, should be able to select by going through day/month/year by keyboard + enter
+Quits when I hit up or down arrow, or try to enter any number where there's focus. Enter does nothing. Cancel works as expected.
+** TODO make counter 1/5 etc be a cake diagram, or change to cyan color when 100%
+** TODO jank editing text for parent
+** TODO centered layout does not work as I intended
+** TODO enter or click on todo navigates to the todo
+** TODO some jank around the counter, does not work for grandparent?
+** TODO even cleaner styling
 ** TODO when use with datastar, handle new html reinit todolist script
 ** TODO when use with datastar, comm with server listening for events
 ** TODO awesome strikethrough animation, a joy to complete tasks
