@@ -29,9 +29,9 @@ Would still have a perma
 - [X] some thing on hover that you can click
 - [X] on assign shows dropdown with options
 - [X] styling the tags label
+** TODO setting priority, not A B C - just marked as priority. Either with A, or some star
 ** TODO add a button to enable edit state, should only show on hover
 ** TODO even cleaner styling
-
 ** TODO space should show dropdown-ish of label options
 ** TODO enter or click on todo navigates to the todo
 ** TODO need a single key to cycle expand collapse

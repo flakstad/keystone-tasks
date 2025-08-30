@@ -56,21 +56,30 @@ class TodoList {
       // Add/cycle tags with 't' key
       if(e.key==="t" && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        this.tagItem(li);
+        const tagsBtn = li.querySelector(".tags-button");
+        if (tagsBtn) {
+          this.showTagsPopup(li, tagsBtn);
+        }
         return;
       }
 
       // Set schedule with 's' key
       if(e.key==="s" && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        this.scheduleItem(li);
+        const scheduleBtn = li.querySelector(".schedule-button");
+        if (scheduleBtn) {
+          this.showSchedulePopup(li, scheduleBtn);
+        }
         return;
       }
 
       // Assign with 'a' key
       if(e.key==="a" && !e.altKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        this.assignItem(li);
+        const assignBtn = li.querySelector(".assign-button");
+        if (assignBtn) {
+          this.showAssignPopup(li, assignBtn);
+        }
         return;
       }
 
@@ -784,7 +793,21 @@ class TodoList {
     
     // Get button position relative to the list container
     const containerRect = this.el.getBoundingClientRect();
+    
+    // Check if button is visible and has proper dimensions
     const buttonRect = button.getBoundingClientRect();
+    if (buttonRect.width === 0 || buttonRect.height === 0) {
+      // Button is not visible (hidden), position relative to the todo item instead
+      const li = button.closest('li');
+      if (li) {
+        const liRect = li.getBoundingClientRect();
+        const left = liRect.right - containerRect.left - 200; // Position near right side of todo
+        const top = liRect.top - containerRect.top;
+        popup.style.left = `${Math.max(0, left)}px`;
+        popup.style.top = `${top}px`;
+        return;
+      }
+    }
     
     const left = buttonRect.left - containerRect.left;
     const top = buttonRect.bottom - containerRect.top + 5;
@@ -868,6 +891,9 @@ class TodoList {
     // Update the hover button to show the data
     this.updateHoverButtons(li);
 
+    // Restore focus to the todo item
+    li.focus();
+
     this.emit("todo:schedule", {
       id: li.dataset.id,
       text: textSpan.textContent,
@@ -950,6 +976,9 @@ class TodoList {
 
     // Update the hover button to show the data
     this.updateHoverButtons(li);
+
+    // Restore focus to the todo item
+    li.focus();
 
     this.emit("todo:assign", {
       id: li.dataset.id,
@@ -1043,6 +1072,9 @@ class TodoList {
 
     // Update the hover button to show the data
     this.updateHoverButtons(li);
+
+    // Restore focus to the todo item
+    li.focus();
 
     this.emit("todo:tags", {
       id: li.dataset.id,
