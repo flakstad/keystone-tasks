@@ -4,6 +4,58 @@
 <meta charset="UTF-8">
 <title>Todo List Demo</title>
 <link rel="stylesheet" href="todo-list.css">
+<style>
+  body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    background: #1a1a1a;
+    color: #ddd;
+  }
+
+  /* Responsive design for smaller screens */
+  @media (max-width: 832px) {
+    body {
+      padding: 0.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 0.25rem;
+    }
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #f8f8f2;
+  }
+
+  #new-todo {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem;
+    margin: 1rem 0;
+    background: #2d2d2d;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #ddd;
+    font-size: 1rem;
+  }
+
+  #new-todo:focus {
+    outline: none;
+    border-color: #f92672;
+  }
+
+  #new-todo::placeholder {
+    color: #888;
+  }
+</style>
 </head>
 <body>
 
@@ -12,9 +64,10 @@
     <span class="todo-label">TODO</span>
     <span class="todo-text">Buy groceries</span>
   </li>
-  <li data-id="1" tabindex="0">
+  <li data-id="1" tabindex="0" class="priority">
     <span class="todo-label">TODO</span>
     <span class="todo-text">Do the thing that must be done</span>
+    <span class="todo-priority" style="display: none;"> priority</span>
   </li>
   <li data-id="2" tabindex="0" class="completed">
     <span class="todo-label">DONE</span>
@@ -48,9 +101,10 @@
       </li>
     </ul>
   </li>
-  <li data-id="8" tabindex="0">
+  <li data-id="8" tabindex="0" class="priority">
     <span class="todo-label">TODO</span>
     <span class="todo-text">Fix critical bug</span>
+    <span class="todo-priority" style="display: none;"> priority</span>
     <span class="todo-tags" style="display: none;"> urgent bug</span>
   </li>
 </ul>
@@ -70,7 +124,7 @@
   });
 
   // Example: log events
-  ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand","todo:edit:start","todo:edit:save","todo:edit:cancel","todo:schedule","todo:assign","todo:tags","todo:navigate"]
+  ["todo:add","todo:toggle","todo:move","todo:indent","todo:outdent","todo:collapse","todo:expand","todo:edit:start","todo:edit:save","todo:edit:cancel","todo:schedule","todo:assign","todo:tags","todo:priority","todo:navigate"]
     .forEach(evt => listEl.addEventListener(evt, e => console.log(evt, e.detail)));
 </script>
 </body>

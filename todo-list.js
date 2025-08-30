@@ -19,14 +19,17 @@ class TodoList {
       const li = e.target.closest("li");
       if (!li) return;
 
-      if (e.target.classList.contains("todo-label")) {
-        console.log("Label clicked", li.dataset.id);
-        this.toggleItem(li);  // or custom behavior for label click
-      } else if (e.target.classList.contains("todo-text")) {
-        console.log("Text clicked", li.dataset.id);
-        // Enter edit mode when clicking on text
-        this.enterEditMode(li);
+      // Check if click is on a button (metadata buttons should handle their own clicks)
+      if (e.target.tagName === "BUTTON") {
+        return; // Let button handle its own click
       }
+
+      // Navigate to solo view when clicking anywhere on the todo item
+      console.log("Todo item clicked", li.dataset.id);
+      this.emit("todo:navigate", {
+        id: li.dataset.id,
+        text: li.querySelector(".todo-text").textContent
+      });
     });
 
     this.el.addEventListener("keydown", e => {
@@ -60,6 +63,13 @@ class TodoList {
         if (tagsBtn) {
           this.showTagsPopup(li, tagsBtn);
         }
+        return;
+      }
+
+      // Toggle priority with 'p' key
+      if(e.key==="p" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this.togglePriority(li);
         return;
       }
 
@@ -256,6 +266,9 @@ class TodoList {
       this.updateChildCount(parentLi);
       parentLi = parentLi.parentNode.closest("li");
     }
+
+    // Update hover buttons to reflect new state
+    this.updateHoverButtons(li);
   }
 
 
@@ -634,6 +647,9 @@ class TodoList {
       this.updateChildCount(parentLi);
       parentLi = parentLi.parentNode.closest("li");
     }
+
+    // Update hover buttons to reflect new state
+    this.updateHoverButtons(li);
   }
 
   scheduleItem(li) {
@@ -685,6 +701,16 @@ class TodoList {
     const buttonsContainer = document.createElement("div");
     buttonsContainer.className = "todo-hover-buttons";
 
+    // Priority button
+    const priorityBtn = document.createElement("button");
+    priorityBtn.className = "hover-button priority-button";
+    priorityBtn.setAttribute("data-type", "priority");
+    priorityBtn.tabIndex = -1; // Remove from tab navigation
+    priorityBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.togglePriority(li);
+    });
+
     // Schedule button
     const scheduleBtn = document.createElement("button");
     scheduleBtn.className = "hover-button schedule-button";
@@ -715,9 +741,33 @@ class TodoList {
       this.showTagsPopup(li, tagsBtn);
     });
 
+    // State button (for cycling TODO/DONE/no-label)
+    const stateBtn = document.createElement("button");
+    stateBtn.className = "hover-button state-button";
+    stateBtn.setAttribute("data-type", "state");
+    stateBtn.tabIndex = -1; // Remove from tab navigation
+    stateBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.toggleItem(li);
+    });
+
+    // Edit button
+    const editBtn = document.createElement("button");
+    editBtn.className = "hover-button edit-button";
+    editBtn.setAttribute("data-type", "edit");
+    editBtn.textContent = "edit";
+    editBtn.tabIndex = -1; // Remove from tab navigation
+    editBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.enterEditMode(li);
+    });
+
+    buttonsContainer.appendChild(priorityBtn);
     buttonsContainer.appendChild(scheduleBtn);
     buttonsContainer.appendChild(assignBtn);
     buttonsContainer.appendChild(tagsBtn);
+    buttonsContainer.appendChild(stateBtn);
+    buttonsContainer.appendChild(editBtn);
     
     // Insert after the todo text span
     const textSpan = li.querySelector(".todo-text");
@@ -732,13 +782,27 @@ class TodoList {
   }
 
   updateHoverButtons(li) {
+    const priorityBtn = li.querySelector(".priority-button");
     const scheduleBtn = li.querySelector(".schedule-button");
     const assignBtn = li.querySelector(".assign-button");
     const tagsBtn = li.querySelector(".tags-button");
+    const stateBtn = li.querySelector(".state-button");
+    const editBtn = li.querySelector(".edit-button");
     
-    if (!scheduleBtn || !assignBtn || !tagsBtn) return;
+    if (!priorityBtn || !scheduleBtn || !assignBtn || !tagsBtn || !stateBtn || !editBtn) return;
     
     let hasAnyData = false;
+    
+    // Update priority button
+    const isPriority = li.classList.contains("priority");
+    if (isPriority) {
+      priorityBtn.textContent = "priority";
+      priorityBtn.classList.add("has-data");
+      hasAnyData = true;
+    } else {
+      priorityBtn.textContent = "priority";
+      priorityBtn.classList.remove("has-data");
+    }
     
     // Update schedule button
     const scheduleSpan = li.querySelector(".todo-schedule");
@@ -770,9 +834,25 @@ class TodoList {
       tagsBtn.classList.add("has-data");
       hasAnyData = true;
     } else {
-      tagsBtn.textContent = "add tags";
+      tagsBtn.textContent = "tags";
       tagsBtn.classList.remove("has-data");
     }
+    
+    // State button shows what clicking will do (next state)
+    if (li.classList.contains("completed")) {
+      stateBtn.textContent = "Heading"; // DONE → none (heading)
+      stateBtn.classList.remove("has-data");
+    } else if (li.classList.contains("no-label")) {
+      stateBtn.textContent = "TODO"; // none → TODO
+      stateBtn.classList.remove("has-data");
+    } else {
+      stateBtn.textContent = "DONE"; // TODO → DONE
+      stateBtn.classList.remove("has-data");
+    }
+
+    // Edit button always shows "edit" and doesn't have data states
+    editBtn.textContent = "edit";
+    editBtn.classList.remove("has-data"); // Edit button is never in "has-data" state
     
     // Add/remove has-data class on the li element
     if (hasAnyData) {
@@ -1080,6 +1160,54 @@ class TodoList {
       id: li.dataset.id,
       text: textSpan.textContent,
       tags: tags
+    });
+  }
+
+  togglePriority(li) {
+    const textSpan = li.querySelector(".todo-text");
+    if (!textSpan) return;
+
+    // Check if already has priority
+    const isPriority = li.classList.contains("priority");
+    
+    if (isPriority) {
+      // Remove priority
+      li.classList.remove("priority");
+      const prioritySpan = li.querySelector(".todo-priority");
+      if (prioritySpan) {
+        prioritySpan.remove();
+      }
+    } else {
+      // Add priority
+      li.classList.add("priority");
+      
+      // Create hidden priority span (like other metadata)
+      let prioritySpan = li.querySelector(".todo-priority");
+      if (!prioritySpan) {
+        prioritySpan = document.createElement("span");
+        prioritySpan.className = "todo-priority";
+        prioritySpan.style.display = "none"; // Hide the span, show in button
+        // Insert after buttons container if it exists, otherwise after text
+        const buttonsContainer = li.querySelector(".todo-hover-buttons");
+        if (buttonsContainer) {
+          buttonsContainer.after(prioritySpan);
+        } else {
+          textSpan.after(prioritySpan);
+        }
+      }
+      prioritySpan.textContent = " priority";
+    }
+
+    // Update the hover button to show the data
+    this.updateHoverButtons(li);
+
+    // Restore focus to the todo item
+    li.focus();
+
+    this.emit("todo:priority", {
+      id: li.dataset.id,
+      text: textSpan.textContent,
+      priority: !isPriority
     });
   }
 

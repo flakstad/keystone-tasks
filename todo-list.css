@@ -70,6 +70,8 @@
     display: inline-block;
   }
 
+
+
   .child-count {
     font-size: 0.85em;
     color: #888;
@@ -173,6 +175,16 @@
     &:not(.has-data) {
       color: #555;
       font-style: italic;
+    }
+
+    /* Priority button special styling when active */
+    &.priority-button.has-data {
+      color: #ff6b35; /* Vibrant orange for priority */
+      font-weight: bold;
+    }
+
+    &.priority-button.has-data:hover {
+      color: #ff8555; /* Lighter on hover */
     }
   }
 

@@ -14,23 +14,30 @@ CLOSED: [2025-08-30 Sat 08:59]
 ** DONE allow having no TODO label, just use as grouping header
 CLOSED: [2025-08-30 Sat 08:59]
 Would still have a perma
-** TODO schedule
+** DONE schedule
+CLOSED: [2025-08-30 Sat 13:44]
 - [X] "s" adds and emits event
 - [X] some thing on hover that you can click
 - [X] on schedule shows calendar for selection
 - [X] styling the schedule label
-** TODO assigned
+** DONE assigned
+CLOSED: [2025-08-30 Sat 13:44]
 - [X] "a" adds and emits event
 - [X] some thing on hover that you can click
 - [X] on assign shows dropdown with options
 - [X] styling the assign label
-** TODO tags
+** DONE tags
+CLOSED: [2025-08-30 Sat 13:44]
 - [X] "t" adds and emits event (change to use only space and shift+arrows for state change)
 - [X] some thing on hover that you can click
 - [X] on assign shows dropdown with options
 - [X] styling the tags label
-** TODO setting priority, not A B C - just marked as priority. Either with A, or some star
-** TODO add a button to enable edit state, should only show on hover
+** DONE setting priority, not A B C - just marked as priority. Either with A, or some star
+CLOSED: [2025-08-30 Sat 14:03]
+** TODO on hold state, as an additional tag in front of the state label
+** TODO change schedule to due on
+** TODO [#B] add a button to enable edit state, should only show on hover :test:
+DEADLINE: <2025-08-30 Sat> SCHEDULED: <2025-08-30 Sat>
 ** TODO even cleaner styling
 ** TODO space should show dropdown-ish of label options
 ** TODO enter or click on todo navigates to the todo
