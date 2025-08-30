@@ -16,19 +16,20 @@ CLOSED: [2025-08-30 Sat 08:59]
 Would still have a perma
 ** TODO schedule
 - [X] "s" adds and emits event
-- [ ] some thing on hover that you can click
-- [ ] on schedule shows calendar for selection
-- [ ] styling the schedule label
+- [X] some thing on hover that you can click
+- [X] on schedule shows calendar for selection
+- [X] styling the schedule label
 ** TODO assigned
 - [X] "a" adds and emits event
-- [ ] some thing on hover that you can click
-- [ ] on assign shows dropdown with options
-- [ ] styling the assign label
+- [X] some thing on hover that you can click
+- [X] on assign shows dropdown with options
+- [X] styling the assign label
 ** TODO tags
-- [ ] "t" adds and emits event (change to use only space and shift+arrows for state change)
-- [ ] some thing on hover that you can click
-- [ ] on assign shows dropdown with options
-- [ ] styling the tags label
+- [X] "t" adds and emits event (change to use only space and shift+arrows for state change)
+- [X] some thing on hover that you can click
+- [X] on assign shows dropdown with options
+- [X] styling the tags label
+** TODO add a button to enable edit state, should only show on hover
 ** TODO space should show dropdown-ish of label options
 ** TODO enter or click on todo navigates to the todo
 ** TODO need a single key to cycle expand collapse

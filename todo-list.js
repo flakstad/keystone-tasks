@@ -628,71 +628,26 @@ class TodoList {
   }
 
   scheduleItem(li) {
-    const textSpan = li.querySelector(".todo-text");
-    if (!textSpan) return;
-
-    // Get or create schedule indicator
-    let scheduleSpan = li.querySelector(".todo-schedule");
-    if (!scheduleSpan) {
-      scheduleSpan = document.createElement("span");
-      scheduleSpan.className = "todo-schedule";
-      textSpan.after(scheduleSpan);
-    }
-
-    // Add current timestamp (for demo - in real implementation this would be user input)
+    // Use the same logic as setScheduleDate but with current date
     const now = new Date();
-    const timestamp = now.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric'
-    });
-    scheduleSpan.textContent = ` ${timestamp}`;
-
-    this.emit("todo:schedule", {
-      id: li.dataset.id,
-      text: textSpan.textContent,
-      timestamp: now.toISOString()
-    });
+    this.setScheduleDate(li, now);
   }
 
   assignItem(li) {
-    const textSpan = li.querySelector(".todo-text");
-    if (!textSpan) return;
-
-    // Get or create assign indicator
-    let assignSpan = li.querySelector(".todo-assign");
-    if (!assignSpan) {
-      assignSpan = document.createElement("span");
-      assignSpan.className = "todo-assign";
-      textSpan.after(assignSpan);
-    }
-
+    const assignSpan = li.querySelector(".todo-assign");
+    
     // For demo purposes, cycle through some example assignees
     const assignees = ["alice", "bob", "charlie", "diana"];
-    const currentAssignee = assignSpan.textContent.trim();
+    const currentAssignee = assignSpan ? assignSpan.textContent.trim() : "";
     const currentIndex = assignees.indexOf(currentAssignee);
     const nextIndex = (currentIndex + 1) % assignees.length;
     const nextAssignee = assignees[nextIndex];
     
-    assignSpan.textContent = ` ${nextAssignee}`;
-
-    this.emit("todo:assign", {
-      id: li.dataset.id,
-      text: textSpan.textContent,
-      assignee: nextAssignee
-    });
+    this.setAssignee(li, nextAssignee);
   }
 
   tagItem(li) {
-    const textSpan = li.querySelector(".todo-text");
-    if (!textSpan) return;
-
-    // Get or create tags indicator
-    let tagsSpan = li.querySelector(".todo-tags");
-    if (!tagsSpan) {
-      tagsSpan = document.createElement("span");
-      tagsSpan.className = "todo-tags";
-      textSpan.after(tagsSpan);
-    }
+    const tagsSpan = li.querySelector(".todo-tags");
 
     // For demo purposes, cycle through some example tag combinations
     const tagSets = [
@@ -704,20 +659,14 @@ class TodoList {
       []  // no tags
     ];
     
-    const currentTags = tagsSpan.textContent.trim();
+    const currentTags = tagsSpan ? tagsSpan.textContent.trim() : "";
     const currentIndex = tagSets.findIndex(tags => 
       tags.length === 0 ? currentTags === "" : currentTags === ` ${tags.join(" ")}`
     );
     const nextIndex = (currentIndex + 1) % tagSets.length;
     const nextTags = tagSets[nextIndex];
     
-    tagsSpan.textContent = nextTags.length > 0 ? ` ${nextTags.join(" ")}` : "";
-
-    this.emit("todo:tags", {
-      id: li.dataset.id,
-      text: textSpan.textContent,
-      tags: nextTags
-    });
+    this.setTags(li, nextTags);
   }
 
   addHoverButtons(li) {
@@ -729,9 +678,8 @@ class TodoList {
 
     // Schedule button
     const scheduleBtn = document.createElement("button");
-    scheduleBtn.className = "hover-button";
-    scheduleBtn.textContent = "S";
-    scheduleBtn.title = "Schedule";
+    scheduleBtn.className = "hover-button schedule-button";
+    scheduleBtn.setAttribute("data-type", "schedule");
     scheduleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.showSchedulePopup(li, scheduleBtn);
@@ -739,9 +687,8 @@ class TodoList {
 
     // Assign button
     const assignBtn = document.createElement("button");
-    assignBtn.className = "hover-button";
-    assignBtn.textContent = "A";
-    assignBtn.title = "Assign";
+    assignBtn.className = "hover-button assign-button";
+    assignBtn.setAttribute("data-type", "assign");
     assignBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.showAssignPopup(li, assignBtn);
@@ -749,9 +696,8 @@ class TodoList {
 
     // Tags button
     const tagsBtn = document.createElement("button");
-    tagsBtn.className = "hover-button";
-    tagsBtn.textContent = "T";
-    tagsBtn.title = "Tags";
+    tagsBtn.className = "hover-button tags-button";
+    tagsBtn.setAttribute("data-type", "tags");
     tagsBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.showTagsPopup(li, tagsBtn);
@@ -761,7 +707,66 @@ class TodoList {
     buttonsContainer.appendChild(assignBtn);
     buttonsContainer.appendChild(tagsBtn);
     
-    li.appendChild(buttonsContainer);
+    // Insert after the todo text span
+    const textSpan = li.querySelector(".todo-text");
+    if (textSpan) {
+      textSpan.after(buttonsContainer);
+    } else {
+      li.appendChild(buttonsContainer);
+    }
+    
+    // Update button text based on current data
+    this.updateHoverButtons(li);
+  }
+
+  updateHoverButtons(li) {
+    const scheduleBtn = li.querySelector(".schedule-button");
+    const assignBtn = li.querySelector(".assign-button");
+    const tagsBtn = li.querySelector(".tags-button");
+    
+    if (!scheduleBtn || !assignBtn || !tagsBtn) return;
+    
+    let hasAnyData = false;
+    
+    // Update schedule button
+    const scheduleSpan = li.querySelector(".todo-schedule");
+    if (scheduleSpan && scheduleSpan.textContent.trim()) {
+      scheduleBtn.textContent = scheduleSpan.textContent.trim();
+      scheduleBtn.classList.add("has-data");
+      hasAnyData = true;
+    } else {
+      scheduleBtn.textContent = "schedule";
+      scheduleBtn.classList.remove("has-data");
+    }
+    
+    // Update assign button
+    const assignSpan = li.querySelector(".todo-assign");
+    if (assignSpan && assignSpan.textContent.trim()) {
+      assignBtn.textContent = assignSpan.textContent.trim();
+      assignBtn.classList.add("has-data");
+      hasAnyData = true;
+    } else {
+      assignBtn.textContent = "assign";
+      assignBtn.classList.remove("has-data");
+    }
+    
+    // Update tags button
+    const tagsSpan = li.querySelector(".todo-tags");
+    if (tagsSpan && tagsSpan.textContent.trim()) {
+      tagsBtn.textContent = tagsSpan.textContent.trim();
+      tagsBtn.classList.add("has-data");
+      hasAnyData = true;
+    } else {
+      tagsBtn.textContent = "add tags";
+      tagsBtn.classList.remove("has-data");
+    }
+    
+    // Add/remove has-data class on the li element
+    if (hasAnyData) {
+      li.classList.add("has-data");
+    } else {
+      li.classList.remove("has-data");
+    }
   }
 
   closeAllPopups() {
@@ -840,7 +845,14 @@ class TodoList {
     if (!scheduleSpan) {
       scheduleSpan = document.createElement("span");
       scheduleSpan.className = "todo-schedule";
-      textSpan.after(scheduleSpan);
+      scheduleSpan.style.display = "none"; // Hide the span, show in button
+      // Insert after buttons container if it exists, otherwise after text
+      const buttonsContainer = li.querySelector(".todo-hover-buttons");
+      if (buttonsContainer) {
+        buttonsContainer.after(scheduleSpan);
+      } else {
+        textSpan.after(scheduleSpan);
+      }
     }
 
     const timestamp = date.toLocaleDateString('en-US', { 
@@ -848,6 +860,9 @@ class TodoList {
       day: 'numeric'
     });
     scheduleSpan.textContent = ` ${timestamp}`;
+
+    // Update the hover button to show the data
+    this.updateHoverButtons(li);
 
     this.emit("todo:schedule", {
       id: li.dataset.id,
@@ -917,10 +932,20 @@ class TodoList {
     if (!assignSpan) {
       assignSpan = document.createElement("span");
       assignSpan.className = "todo-assign";
-      textSpan.after(assignSpan);
+      assignSpan.style.display = "none"; // Hide the span, show in button
+      // Insert after buttons container if it exists, otherwise after text
+      const buttonsContainer = li.querySelector(".todo-hover-buttons");
+      if (buttonsContainer) {
+        buttonsContainer.after(assignSpan);
+      } else {
+        textSpan.after(assignSpan);
+      }
     }
 
     assignSpan.textContent = ` ${assignee}`;
+
+    // Update the hover button to show the data
+    this.updateHoverButtons(li);
 
     this.emit("todo:assign", {
       id: li.dataset.id,
@@ -1000,10 +1025,20 @@ class TodoList {
     if (!tagsSpan) {
       tagsSpan = document.createElement("span");
       tagsSpan.className = "todo-tags";
-      textSpan.after(tagsSpan);
+      tagsSpan.style.display = "none"; // Hide the span, show in button
+      // Insert after buttons container if it exists, otherwise after text
+      const buttonsContainer = li.querySelector(".todo-hover-buttons");
+      if (buttonsContainer) {
+        buttonsContainer.after(tagsSpan);
+      } else {
+        textSpan.after(tagsSpan);
+      }
     }
 
     tagsSpan.textContent = tags.length > 0 ? ` ${tags.join(' ')}` : "";
+
+    // Update the hover button to show the data
+    this.updateHoverButtons(li);
 
     this.emit("todo:tags", {
       id: li.dataset.id,

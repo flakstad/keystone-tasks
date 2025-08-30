@@ -7,50 +7,55 @@
 </head>
 <body>
 
-<h1>Todo List</h1>
-
-<input id="new-todo" type="text" placeholder="Add a todo and press Enter">
-
 <ul id="todo-list" class="todo-list">
   <li data-id="1" tabindex="0">
     <span class="todo-label">TODO</span>
-    <span class="todo-text">Buy milk</span>
+    <span class="todo-text">Buy groceries</span>
   </li>
-  <li data-id="2" tabindex="0">
+  <li data-id="1" tabindex="0">
     <span class="todo-label">TODO</span>
-    <span class="todo-text">Read book</span>
+    <span class="todo-text">Do the thing that must be done</span>
   </li>
-  <li data-id="2" tabindex="0">
-    <span class="todo-label">TODO</span>
-    <span class="todo-text">Make food</span>
+  <li data-id="2" tabindex="0" class="completed">
+    <span class="todo-label">DONE</span>
+    <span class="todo-text">Review pull request</span>
+    <span class="todo-tags" style="display: none;"> urgent review</span>
   </li>
-  <li data-id="2" tabindex="0">
-    <span class="todo-label">TODO</span>
-    <span class="todo-text">Tidy living room</span>
+  <li data-id="3" tabindex="0" class="completed">
+    <span class="todo-label">DONE</span>
+    <span class="todo-text">Setup development environment</span>
+    <span class="todo-assign" style="display: none;"> bob</span>
   </li>
-  <li data-id="2" tabindex="0">
+  <li data-id="4" tabindex="0">
     <span class="todo-label">TODO</span>
-    <span class="todo-text">Run around</span>
+    <span class="todo-text">Write documentation</span>
+    <span class="todo-schedule" style="display: none;"> Jan 5</span>
+    <span class="todo-tags" style="display: none;"> docs feature</span>
+  </li>
+  <li data-id="5" tabindex="0" class="no-label">
+    <span class="todo-text">Project Planning</span>
+    <ul>
+      <li data-id="6" tabindex="0">
+        <span class="todo-label">TODO</span>
+        <span class="todo-text">Define requirements</span>
+        <span class="todo-schedule" style="display: none;"> Jan 2</span>
+      </li>
+      <li data-id="7" tabindex="0">
+        <span class="todo-label">TODO</span>
+        <span class="todo-text">Create wireframes</span>
+        <span class="todo-assign" style="display: none;"> diana</span>
+        <span class="todo-tags" style="display: none;"> design ui</span>
+      </li>
+    </ul>
+  </li>
+  <li data-id="8" tabindex="0">
+    <span class="todo-label">TODO</span>
+    <span class="todo-text">Fix critical bug</span>
+    <span class="todo-tags" style="display: none;"> urgent bug</span>
   </li>
 </ul>
 
-<div id="key-bindings">
-  <strong>Key Bindings:</strong><br>
-  Space → cycle TODO → DONE → no label<br>
-  Shift + → → cycle forward (TODO → DONE → no label)<br>
-  Shift + ← → cycle backward (TODO → no label → DONE)<br>
-  E → edit todo text<br>
-  S → set schedule (shows date)<br>
-  A → assign (cycles through assignees)<br>
-  T → tags (cycles through tag sets)<br>
-  Enter → navigate to solo view (emits event)<br>
-  Alt + Enter → add new sibling todo<br>
-  Alt + Tab → cycle collapsed/expanded<br>
-  Alt + ↑ / ↓ → move item<br>
-  Alt + → / ← → indent / outdent<br>
-  Alt + H → collapse, Alt + L → expand<br>
-  <em>In edit mode:</em> Enter → save, Escape → cancel
-</div>
+<input id="new-todo" type="text" placeholder="Add a todo and press Enter">
 
 <script src="todo-list.js"></script>
 <script>
