@@ -4,8 +4,44 @@
 <meta charset="UTF-8">
 <title>Todo List Demo</title>
 <link rel="stylesheet" href="todo-list.css">
+<style>
+  /* Demo page styling */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: monospace;
+    background: #1e1e1e;
+    color: #ddd;
+  }
+  
+  .demo-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  
+  /* Responsive design for smaller screens */
+  @media (max-width: 832px) {
+    .demo-container {
+      padding: 0.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .demo-container {
+      padding: 0.25rem;
+    }
+  }
+  
+  h1 {
+    color: #f8f8f2;
+  }
+</style>
 </head>
 <body>
+
+<div class="demo-container">
 
 <ul id="todo-list" class="todo-list">
   <li data-id="1" tabindex="0">
@@ -60,6 +96,7 @@
 </ul>
 
 <button id="new-todo" class="hover-button">+ Add</button>
+</div>
 
 <script src="todo-list.js"></script>
 <script>

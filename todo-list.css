@@ -1,24 +1,3 @@
-/* Layout for demo page */
-body {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-
-/* Responsive design for smaller screens */
-@media (max-width: 832px) {
-  body {
-    padding: 0.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  body {
-    padding: 0.25rem;
-  }
-}
-
 /* Add todo button styling */
 #new-todo {
   display: block;
@@ -305,15 +284,4 @@ body {
   }
 }
 
-/* Demo page styling - not part of the package */
-body {
-  font-family: monospace;
-  margin: 10rem 20rem;
-  background: #1e1e1e;
-  color: #ddd;
-  max-width: 800px;
-}
 
-h1 {
-  color: #f8f8f2;
-}
